@@ -1,0 +1,132 @@
+* text=auto
+# Unity files
+*.meta filter=lfs diff=lfs merge=lfs -text
+*.unity -text merge=unityyamlmerge diff
+*.asset filter=lfs diff=lfs merge=lfs -text
+*.prefab filter=lfs diff=lfs merge=lfs -text
+*.mat filter=lfs diff=lfs merge=lfs -text
+*.anim -text merge=unityyamlmerge diff
+*.controller -text merge=unityyamlmerge diff
+*.overrideController -text merge=unityyamlmerge diff
+*.physicMaterial -text merge=unityyamlmerge diff
+*.physicsMaterial2D -text merge=unityyamlmerge diff
+*.playable -text merge=unityyamlmerge diff
+*.mask -text merge=unityyamlmerge diff
+*.brush -text merge=unityyamlmerge diff
+*.flare -text merge=unityyamlmerge diff
+*.fontsettings -text merge=unityyamlmerge diff
+*.guiskin -text merge=unityyamlmerge diff
+*.giparams -text merge=unityyamlmerge diff
+*.renderTexture -text merge=unityyamlmerge diff
+*.spriteatlas -text merge=unityyamlmerge diff
+*.terrainlayer -text merge=unityyamlmerge diff
+*.mixer -text merge=unityyamlmerge diff
+*.shadervariants -text merge=unityyamlmerge diff
+# Image formats
+*.psd filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.gif filter=lfs diff=lfs merge=lfs -text
+*.bmp filter=lfs diff=lfs merge=lfs -text
+*.tga filter=lfs diff=lfs merge=lfs -text
+*.tiff filter=lfs diff=lfs merge=lfs -text
+*.tif filter=lfs diff=lfs merge=lfs -text
+*.iff filter=lfs diff=lfs merge=lfs -text
+*.pict filter=lfs diff=lfs merge=lfs -text
+*.dds filter=lfs diff=lfs merge=lfs -text
+*.xcf filter=lfs diff=lfs merge=lfs -text
+# Audio formats
+*.mp3 filter=lfs diff=lfs merge=lfs -text
+*.ogg filter=lfs diff=lfs merge=lfs -text
+*.wav filter=lfs diff=lfs merge=lfs -text
+*.aiff filter=lfs diff=lfs merge=lfs -text
+*.aif filter=lfs diff=lfs merge=lfs -text
+*.mod filter=lfs diff=lfs merge=lfs -text
+*.it filter=lfs diff=lfs merge=lfs -text
+*.s3m filter=lfs diff=lfs merge=lfs -text
+*.xm filter=lfs diff=lfs merge=lfs -text
+# Video formats
+*.mov filter=lfs diff=lfs merge=lfs -text
+*.avi filter=lfs diff=lfs merge=lfs -text
+*.asf filter=lfs diff=lfs merge=lfs -text
+*.mpg filter=lfs diff=lfs merge=lfs -text
+*.mpeg filter=lfs diff=lfs merge=lfs -text
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+# 3D formats
+*.fbx filter=lfs diff=lfs merge=lfs -text
+*.obj filter=lfs diff=lfs merge=lfs -text
+*.max filter=lfs diff=lfs merge=lfs -text
+*.blend filter=lfs diff=lfs merge=lfs -text
+*.dae filter=lfs diff=lfs merge=lfs -text
+*.mb filter=lfs diff=lfs merge=lfs -text
+*.ma filter=lfs diff=lfs merge=lfs -text
+*.3ds filter=lfs diff=lfs merge=lfs -text
+*.dfx filter=lfs diff=lfs merge=lfs -text
+*.c4d filter=lfs diff=lfs merge=lfs -text
+*.lwo filter=lfs diff=lfs merge=lfs -text
+*.lwo2 filter=lfs diff=lfs merge=lfs -text
+*.abc filter=lfs diff=lfs merge=lfs -text
+*.3dm filter=lfs diff=lfs merge=lfs -text
+# Build
+*.dll filter=lfs diff=lfs merge=lfs -text
+*.pdb filter=lfs diff=lfs merge=lfs -text
+*.mdb filter=lfs diff=lfs merge=lfs -text
+# Packaging
+*.zip filter=lfs diff=lfs merge=lfs -text
+*.7z filter=lfs diff=lfs merge=lfs -text
+*.gz filter=lfs diff=lfs merge=lfs -text
+*.rar filter=lfs diff=lfs merge=lfs -text
+*.tar filter=lfs diff=lfs merge=lfs -text
+Assets/Vuplex/WebView/Plugins/Mac/VuplexWebViewMac_with_codecs.bundle/Contents/Frameworks/Vuplex[[:space:]]WebView.app/Contents/Frameworks/Chromium[[:space:]]Embedded[[:space:]]Framework.framework/Libraries/libswiftshader_libEGL.dylib.meta filter=lfs diff=lfs merge=lfs -text
+*.html filter=lfs diff=lfs merge=lfs -text
+libswiftshader_libEGL.dylib.meta filter=lfs diff=lfs merge=lfs -text
+Assets/Vuplex/WebView/Plugins/Mac/VuplexWebViewMac.bundle/Contents/Frameworks/Vuplex[[:space:]]WebView.app/Contents/Frameworks/Chromium[[:space:]]Embedded[[:space:]]Framework.framework/Chromium[[:space:]]Embedded[[:space:]]Framework filter=lfs diff=lfs merge=lfs -text
+Assets/Vuplex/WebView/Plugins/Mac/VuplexWebViewMac_with_codecs.bundle/Contents/Frameworks/Vuplex[[:space:]]WebView.app/Contents/Frameworks/Chromium[[:space:]]Embedded[[:space:]]Framework.framework/Chromium[[:space:]]Embedded[[:space:]]Framework filter=lfs diff=lfs merge=lfs -text
+Assets/Vuplex/WebView/Plugins/Windows/VuplexWebViewChromium/log-chromium.txt filter=lfs diff=lfs merge=lfs -text
+[[:space:]]Assets/Vuplex/WebView/Plugins/Windows/VuplexWebViewChromium/log-chromium.txt filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/iOS/AgoraRtckit.framework/AgoraRtcKit filter=lfs diff=lfs merge=lfs -text
+*.net filter=lfs diff=lfs merge=lfs -text
+*.shape filter=lfs diff=lfs merge=lfs -text
+*.modulemap filter=lfs diff=lfs merge=lfs -text
+coremldata.bin.meta filter=lfs diff=lfs merge=lfs -text
+*.h filter=lfs diff=lfs merge=lfs -text
+*.PLACEHOLDER filter=lfs diff=lfs merge=lfs -text
+*.plist filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Plugins/macOS/agoraSdkCWrapper.bundle/Contents/Resources/AgoraRtcKit.framework/Versions/A filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Plugins/macOS/agoraSdkCWrapper.bundle/Contents/Resources/AgoraRtcKit.framework/Versions/A/Resources/pvc_jnqd.bundle/Contents/Resources/T2jnd4_22_padding_640x360.mlmodelc/neural_network_optionals/coremldata.bin.meta filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Demo/ButtonHandler.cs filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Demo/TestHelloUnityVideo.cs filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Demo/TestHome.cs filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Demo/UIElementDragger.cs filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Editor/BL_BuildPostProcess.cs filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Plugins/Android/AgoraRtcEngineKit.plugin/AndroidManifest.xml filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Plugins/Android/AgoraRtcEngineKit.plugin/libs/PLACEHOLDER filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Plugins/Android/AgoraRtcEngineKit.plugin/libs/arm64-v8a/PLACEHOLDER filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Plugins/Android/AgoraRtcEngineKit.plugin/libs/armeabi-v7a/PLACEHOLDER filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Plugins/Android/AgoraRtcEngineKit.plugin/libs/x86/PLACEHOLDER filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Plugins/Android/AgoraRtcEngineKit.plugin/project.properties filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Plugins/iOS/PLACEHOLDER filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Plugins/macOS/agoraSdkCWrapper.bundle/Contents/Resources/AgoraRtcKit.framework/Versions/A/Resources/pvc_jnqd.bu filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Plugins/macOS/agoraSdkCWrapper.bundle/Contents/Resources/AgoraRtcKit.framework/Versions/A/Res filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Plugins/macOS/agoraSdkCWrapper.bundle/Contents/Resources/AgoraRtcKit.framework/Versions/A/Resources/pvc_jnqd.bundle/Contents/Resources/T2jnd4_22_padding_640x360.mlmodelc/neural_network_optionals/ filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Plugins/macOS/agoraSdkCWrapper.bundle/Contents/Resources/AgoraRtcKit.framework/Versions/A/Resources/pvc_jnqd. filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Plugins/macOS/agoraSdkCWrapper.bundle/Contents/Resources/AgoraRtcKit.framework/Versions/A/Resources/pvc_jnqd.bundle/Contents/Resources/ filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Plugins/macOS/agoraSdkCWrapper.b filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Plugins/macOS/agoraSdkCWrapper.bundle/Contents/Resources/AgoraRtcKit.framework/Versions/A/Resources/pvc_jnqd.bundle/Contents/Resources/T2jnd4_37_padding_640x360.mlmodelc filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Plugins/iOS/AgoraRtcKit.framework/AgoraRtcKit filter=lfs diff=lfs merge=lfs -text
+ArtifactDB filter=lfs diff=lfs merge=lfs -text
+*.dylib filter=lfs diff=lfs merge=lfs -text
+Library/SourceAssetDB filter=lfs diff=lfs merge=lfs -text
+Library/ArtifactDB filter=lfs diff=lfs merge=lfs -text
+Assets/Plugins/GitHub/Editor/ExtensionLoader.cs filter=lfs diff=lfs merge=lfs -text
+*.exr filter=lfs diff=lfs merge=lfs -text
+*.pdf filter=lfs diff=lfs merge=lfs -text
+*.pak filter=lfs diff=lfs merge=lfs -text
+*.patch filter=lfs diff=lfs merge=lfs -text
+Assets/AgoraEngine/Scripts/AgoraGamingSDK/PLACEHOLDER filter=lfs diff=lfs merge=lfs -text
+*.md filter=lfs diff=lfs merge=lfs -text
+folder/Assets/Firebase filter=lfs diff=lfs merge=lfs -text
+folder/Assets/Plugins filter=lfs diff=lfs merge=lfs -text
+*.hdr filter=lfs diff=lfs merge=lfs -text
+*.srcaar filter=lfs diff=lfs merge=lfs -text
+*.so filter=lfs diff=lfs merge=lfs -text
