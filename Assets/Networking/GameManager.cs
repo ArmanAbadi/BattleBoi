@@ -18,7 +18,12 @@ public class GameManager : MonoBehaviourPunCallbacks
 	[Tooltip("The prefab to use for representing the player")]
 	[SerializeField]
 	private GameObject playerPrefab;
-
+	[Tooltip("The prefab to use for representing the player")]
+	[SerializeField]
+	private GameObject PigPrefab;
+	[Tooltip("The prefab to use for representing the player")]
+	[SerializeField]
+	private GameObject EvilPigPrefab;
 	#endregion
 
 	void Start()
@@ -31,6 +36,11 @@ public class GameManager : MonoBehaviourPunCallbacks
 		}
 
 		PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+
+		for(int i = 0; i < 10; i++)
+        {
+			MonsterManager.AddPig(PhotonNetwork.Instantiate(this.PigPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0));
+		}
 	}
 	public override void OnLeftRoom()
 	{

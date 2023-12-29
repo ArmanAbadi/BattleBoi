@@ -1,0 +1,58 @@
+using Photon.Pun;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerController : MonoBehaviour
+{
+    public static PlayerController Instance { get; private set; }
+    private void Awake()
+    {
+        // If there is an instance, and it's not me, delete myself.
+
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+    Vector3 Direction = Vector2.zero;
+    public float Speed = 2f;
+    Rigidbody2D rigidbody2D;
+    Animator animator;
+    // Start is called before the first frame update
+    void Start()
+    {
+        rigidbody2D = GetComponent<Rigidbody2D>();
+        animator = GetComponentInChildren<Animator>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        UpdateDirection();
+        UpdateMovement();
+        Attack();
+    }
+    void UpdateDirection()
+    {
+        Direction = Vector3.zero;
+        if (Input.GetKey(KeyCode.A)) Direction += Vector3.left;
+        if (Input.GetKey(KeyCode.D)) Direction += Vector3.right;
+        if (Input.GetKey(KeyCode.W)) Direction += Vector3.up;
+        if (Input.GetKey(KeyCode.S)) Direction += Vector3.down;
+
+        if (Direction != Vector3.zero) transform.rotation = Quaternion.LookRotation(Vector3.forward, -Direction);
+    }
+    void UpdateMovement()
+    {
+        rigidbody2D.velocity = Speed * Direction.normalized;
+    }
+    void Attack()
+    {
+        if (Input.GetKeyDown(KeyCode.Space)) animator.SetTrigger(GlobalConstants.SlashTrigger);
+    }
+}
