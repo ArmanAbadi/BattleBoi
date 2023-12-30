@@ -19,15 +19,33 @@ public class PlayerController : MonoBehaviour
             Instance = this;
         }
     }
+    [SerializeField]
+    int MaxHealth = 100;
+    int currentHealth;
+    public int CurrentHealth
+    {
+        get { return currentHealth; }
+        set {
+            currentHealth = value;
+            if (currentHealth < 0) currentHealth = 0;
+            if (currentHealth > MaxHealth) currentHealth = MaxHealth;
+            if(HealthBarController.Instance != null) HealthBarController.Instance.UpdateHealthBar((float)currentHealth / MaxHealth);
+        }
+    }
     Vector3 Direction = Vector2.zero;
     public float Speed = 2f;
     Rigidbody2D rigidbody2D;
     Animator animator;
+    public float AttackCooldown = 0.5f;
+    float AttackCoolDownMarker = 0f;
+    public Sword sword;
     // Start is called before the first frame update
     void Start()
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
+        CurrentHealth = MaxHealth;
+        MapGen.Instance.GenerateTiles((int)PlayerController.Instance.transform.position.x, (int)PlayerController.Instance.transform.position.y);
     }
 
     // Update is called once per frame
@@ -53,6 +71,18 @@ public class PlayerController : MonoBehaviour
     }
     void Attack()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) animator.SetTrigger(GlobalConstants.SlashTrigger);
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if ( Time.time > AttackCoolDownMarker + AttackCooldown)
+            {
+                sword.Attack();
+                animator.SetTrigger(GlobalConstants.SlashTrigger);
+                AttackCoolDownMarker = Time.time;
+            }
+        }
+    }
+    public void TakeDamage(int dmg)
+    {
+        CurrentHealth -= dmg;
     }
 }

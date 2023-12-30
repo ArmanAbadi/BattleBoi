@@ -14,6 +14,9 @@ public class AIController : MonoBehaviour
     protected Animator animator;
     public bool IsDead = false;
     protected float AggroRange = 4f;
+
+    public float AttackCooldown = 1f;
+    protected float AttackCoolDownMarker = 0f;
     // Start is called before the first frame update
     void Start()
     {

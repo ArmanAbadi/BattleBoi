@@ -60,15 +60,33 @@ public class MapGen : MonoBehaviour
     public TileBase GrassCornerBL;
     public TileBase GrassCornerBR;
 
+    public static MapGen Instance { get; private set; }
+    private void Awake()
+    {
+        // If there is an instance, and it's not me, delete myself.
 
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
         Tiles = new TileObject[ChunkSize*ChunkSize];
-        
-        GenerateTiles();
     }
-    public void GenerateTiles()
+    private void Update()
+    {
+        if((PlayerController.Instance.transform.position-tilemap.transform.parent.position).magnitude > ChunkSize / 4)
+        {
+            GenerateTiles((int)PlayerController.Instance.transform.position.x, (int)PlayerController.Instance.transform.position.y);
+        }
+    }
+    public void GenerateTiles(float x, float y)
     {
         tilemap.ClearAllTiles();
         for (int i = 0; i < Tiles.Length; i++)
@@ -76,7 +94,7 @@ public class MapGen : MonoBehaviour
             tempX = i % ChunkSize;
             tempY = i / ChunkSize;
 
-            if (Perlin.PerlinNoise(i % ChunkSize, i / ChunkSize , ChunkSize, scale) > 0.5f)
+            if (Perlin.PerlinNoise(i % ChunkSize + x - ChunkSize/2, i / ChunkSize + y - ChunkSize/2 , ChunkSize, scale) > 0.5f)
             {
                 Tiles[i] = new TileObject(tempX, tempY, TileType.Dirt);
             }
@@ -87,10 +105,7 @@ public class MapGen : MonoBehaviour
         }
         SetTiles();
         tilemap.RefreshAllTiles();
-    }
-    public void SetTiles2()
-    {
-
+        AdjustMap(x,y);
     }
     public void SetTiles()
     {
@@ -197,6 +212,10 @@ public class MapGen : MonoBehaviour
             }
 
         }
+    }
+    public void AdjustMap(float x, float y)
+    {
+        tilemap.transform.parent.position = new Vector3(x, y, 0);
     }
 }
 public class TileObject

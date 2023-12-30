@@ -7,7 +7,7 @@ public class PigController : AIController
     public float AggroAlliesRange = 10f;
     protected bool Aggrod = false;
     public float AggroSpeed = 5f;
-    new public float MovementUpdateTime = 1f;
+    public int Damage = 10;
 
     protected override IEnumerator MovementUpdate()
     {
@@ -62,5 +62,24 @@ public class PigController : AIController
     protected override void BasicFollow()
     {
         Direction += (PlayerController.Instance.transform.position - transform.position).normalized;
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Attack(collision);
+    }
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        Attack(collision);
+    }
+    void Attack(Collision2D collision)
+    {
+        if (Aggrod && collision.gameObject.CompareTag(GlobalConstants.Tags.Player.ToString()))
+        {
+            if (Time.time > AttackCoolDownMarker + AttackCooldown)
+            {
+                PlayerController.Instance.TakeDamage(Damage);
+                AttackCoolDownMarker = Time.time;
+            }
+        }
     }
 }

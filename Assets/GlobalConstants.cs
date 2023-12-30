@@ -10,6 +10,7 @@ public static class GlobalConstants
 
     public enum Tags
     {
+        Player,
         Monster,
         Sword
     }
