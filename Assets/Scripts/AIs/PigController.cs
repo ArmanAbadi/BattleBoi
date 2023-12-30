@@ -77,6 +77,8 @@ public class PigController : AIController
         {
             if (Time.time > AttackCoolDownMarker + AttackCooldown)
             {
+
+                Debug.Log("pig atk");
                 PlayerController.Instance.TakeDamage(Damage);
                 AttackCoolDownMarker = Time.time;
             }

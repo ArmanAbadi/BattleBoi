@@ -83,6 +83,14 @@ public class PlayerController : MonoBehaviour
     }
     public void TakeDamage(int dmg)
     {
+
+        Debug.Log("dmg");
         CurrentHealth -= dmg;
+    }
+    public void Heal(int heal)
+    {
+
+        Debug.Log("heal");
+        CurrentHealth += heal;
     }
 }

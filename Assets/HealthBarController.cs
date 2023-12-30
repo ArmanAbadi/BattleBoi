@@ -23,6 +23,7 @@ public class HealthBarController : MonoBehaviour
 
     public void UpdateHealthBar(float percent)
     {
+        Debug.Log(percent);
         HealthBarGreen.value = percent;
     }
 }

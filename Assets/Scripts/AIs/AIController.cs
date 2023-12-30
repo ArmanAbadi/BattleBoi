@@ -17,6 +17,8 @@ public class AIController : MonoBehaviour
 
     public float AttackCooldown = 1f;
     protected float AttackCoolDownMarker = 0f;
+
+    public List<GameObject> DropablePrefabs;
     // Start is called before the first frame update
     void Start()
     {
@@ -68,6 +70,10 @@ public class AIController : MonoBehaviour
         IsDead = true;
         animator.SetTrigger(GlobalConstants.DeadTrigger);
         GetComponent<BoxCollider2D>().isTrigger = true;
+        foreach(GameObject dropable in DropablePrefabs)
+        {
+            PhotonNetwork.Instantiate(dropable.name, transform.position, Quaternion.identity);
+        }
     }
     public virtual void TakeDmg(int dmg)
     {
