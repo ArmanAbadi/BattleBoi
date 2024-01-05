@@ -8,7 +8,11 @@ public class PigController : AIController
     protected bool Aggrod = false;
     public float AggroSpeed = 5f;
     public int Damage = 10;
-
+    protected void Start()
+    {
+        base.Start();
+        MonsterManager.AddPig(this);
+    }
     protected override IEnumerator MovementUpdate()
     {
         while (!IsDead)
@@ -83,5 +87,9 @@ public class PigController : AIController
                 AttackCoolDownMarker = Time.time;
             }
         }
+    }
+    private void OnDestroy()
+    {
+        MonsterManager.RemovePig(this);
     }
 }

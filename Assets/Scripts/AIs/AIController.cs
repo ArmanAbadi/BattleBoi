@@ -20,7 +20,7 @@ public class AIController : MonoBehaviour
 
     public List<GameObject> DropablePrefabs;
     // Start is called before the first frame update
-    void Start()
+    protected void Start()
     {
         CurrentHealth = MaxHealth;
         rigidbody2D = GetComponent<Rigidbody2D>();
@@ -70,7 +70,10 @@ public class AIController : MonoBehaviour
         IsDead = true;
         animator.SetTrigger(GlobalConstants.DeadTrigger);
         GetComponent<BoxCollider2D>().isTrigger = true;
-        foreach(GameObject dropable in DropablePrefabs)
+    }
+    public void SpawnDropables()
+    {
+        foreach (GameObject dropable in DropablePrefabs)
         {
             PhotonNetwork.Instantiate(dropable.name, transform.position, Quaternion.identity);
         }

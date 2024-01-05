@@ -63,7 +63,9 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.W)) Direction += Vector3.up;
         if (Input.GetKey(KeyCode.S)) Direction += Vector3.down;
 
-        if (Direction != Vector3.zero) transform.rotation = Quaternion.LookRotation(Vector3.forward, -Direction);
+        //if (Direction != Vector3.zero) transform.rotation = Quaternion.LookRotation(Vector3.forward, -Direction);
+        animator.SetFloat(GlobalConstants.HorizontalVelocity, Direction.x);
+        animator.SetFloat(GlobalConstants.VerticalVelocity, Direction.y);
     }
     void UpdateMovement()
     {
@@ -75,7 +77,7 @@ public class PlayerController : MonoBehaviour
         {
             if ( Time.time > AttackCoolDownMarker + AttackCooldown)
             {
-                sword.Attack();
+                //sword.Attack();
                 animator.SetTrigger(GlobalConstants.SlashTrigger);
                 AttackCoolDownMarker = Time.time;
             }

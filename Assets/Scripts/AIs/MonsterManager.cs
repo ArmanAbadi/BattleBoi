@@ -6,11 +6,12 @@ public static class MonsterManager
 {
     public static List<PigController> Pigs = new List<PigController>();
 
-    public static void AddPig(GameObject Pig)
+    public static void AddPig(PigController Pig)
     {
-        if (Pig.GetComponent<PigController>())
-        {
-            Pigs.Add(Pig.GetComponent<PigController>());
-        }
+        Pigs.Add(Pig);
+    }
+    public static void RemovePig(PigController Pig)
+    {
+        Pigs.Remove(Pig);
     }
 }

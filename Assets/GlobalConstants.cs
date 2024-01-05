@@ -8,6 +8,7 @@ public static class GlobalConstants
     public static string SlashTrigger = "Slash";
     public static string DeadTrigger = "Dead";
     public static string HorizontalVelocity = "HorizontalVelocity";
+    public static string VerticalVelocity = "VerticalVelocity";
 
     public enum Tags
     {

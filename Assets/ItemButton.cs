@@ -7,7 +7,7 @@ using static GlobalConstants;
 
 public class ItemButton : MonoBehaviour
 {
-    Image Image;
+    public Image Image;
     TextMeshProUGUI ItemCountText;
     ItemType itemType;
     int count = 0;
@@ -23,7 +23,6 @@ public class ItemButton : MonoBehaviour
 
     public void SetItemButton(Item item, int itemCount)
     {
-        Image = GetComponent<Image>();
         ItemCountText = GetComponentInChildren<TextMeshProUGUI>();
         
         itemType = item.itemType;

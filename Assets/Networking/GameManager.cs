@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
 		for(int i = 0; i < 10; i++)
         {
-			MonsterManager.AddPig(PhotonNetwork.Instantiate(this.PigPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0));
+			PhotonNetwork.Instantiate(this.PigPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
 		}
 	}
 	public override void OnLeftRoom()
