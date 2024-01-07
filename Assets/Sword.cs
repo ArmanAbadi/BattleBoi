@@ -17,6 +17,7 @@ public class Sword : MonoBehaviour
         {
             if (monsters.Contains(collision.gameObject.GetComponent<AIController>())) return;
             if (collision.GetComponent<AIController>().IsDead) return;
+            monsters.Add(collision.gameObject.GetComponent<AIController>());
             collision.gameObject.GetComponent<AIController>().TakeDmg(Damage);
             Destroy(Instantiate(HitVFXPrefab, collision.transform.position, Quaternion.identity), 1f);
         }

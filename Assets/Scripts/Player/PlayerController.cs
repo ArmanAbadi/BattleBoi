@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour
     public float AttackCooldown = 0.5f;
     float AttackCoolDownMarker = 0f;
     public Sword sword;
+    bool FreezePlayer = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -51,9 +52,18 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (FreezePlayer)
+        {
+            Freeze();
+            return;
+        }
         UpdateDirection();
         UpdateMovement();
         Attack();
+    }
+    void Freeze()
+    {
+        rigidbody2D.velocity = Vector3.zero;
     }
     void UpdateDirection()
     {
@@ -77,11 +87,23 @@ public class PlayerController : MonoBehaviour
         {
             if ( Time.time > AttackCoolDownMarker + AttackCooldown)
             {
-                //sword.Attack();
-                animator.SetTrigger(GlobalConstants.SlashTrigger);
+                if(Direction.y == -1) { animator.Play(GlobalConstants.HumanAttackDown); }
+                else if(Direction.x == -1) { animator.Play(GlobalConstants.HumanAttackLeft); }
+                else if(Direction.x == 1) { animator.Play(GlobalConstants.HumanAttackRight); }
+                else if (Direction.y == 1) { animator.Play(GlobalConstants.HumanAttackUp); }
+                else { animator.Play(GlobalConstants.HumanAttackDown); }
+                sword.Attack();
                 AttackCoolDownMarker = Time.time;
+                StartCoroutine(AttackDelay(animator.GetCurrentAnimatorClipInfo(0)[0].clip.length));
             }
         }
+    }
+    IEnumerator AttackDelay(float delay)
+    {
+        Debug.Log(delay);
+        FreezePlayer = true;
+        yield return new WaitForSeconds(delay);
+        FreezePlayer = false;
     }
     public void TakeDamage(int dmg)
     {
@@ -94,5 +116,9 @@ public class PlayerController : MonoBehaviour
 
         Debug.Log("heal");
         CurrentHealth += heal;
+    }
+    public bool IsFullHealth()
+    {
+        return currentHealth == MaxHealth;
     }
 }

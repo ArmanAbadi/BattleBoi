@@ -9,6 +9,10 @@ public static class GlobalConstants
     public static string DeadTrigger = "Dead";
     public static string HorizontalVelocity = "HorizontalVelocity";
     public static string VerticalVelocity = "VerticalVelocity";
+    public static string HumanAttackUp = "HumanAttackUpNoWeapon";
+    public static string HumanAttackDown = "HumanAttackDownNoWeapon";
+    public static string HumanAttackLeft = "HumanAttackLeftNoWeapon";
+    public static string HumanAttackRight = "HumanAttackRightNoWeapon";
 
     public enum Tags
     {
@@ -41,6 +45,7 @@ public static class GlobalConstants
         }
         public override void ActivateItem()
         {
+            if (PlayerController.Instance.IsFullHealth()) return;
             base.ActivateItem();
             PlayerController.Instance.Heal(HealthGain);
 

@@ -36,10 +36,11 @@ public class GameManager : MonoBehaviourPunCallbacks
 		}
 
 		PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
-
-		for(int i = 0; i < 10; i++)
+		Vector2 RandomSpawn;
+		for(int i = 0; i < 100; i++)
         {
-			PhotonNetwork.Instantiate(this.PigPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+			RandomSpawn = Random.insideUnitCircle*50;
+			PhotonNetwork.Instantiate(this.PigPrefab.name, new Vector3(RandomSpawn.x, RandomSpawn.y, 0f), Quaternion.identity, 0);
 		}
 	}
 	public override void OnLeftRoom()
