@@ -18,7 +18,8 @@ public static class GlobalConstants
     {
         Player,
         Monster,
-        Sword
+        Sword,
+        Dropable
     }
     public enum ItemType
     {
