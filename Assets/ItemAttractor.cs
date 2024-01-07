@@ -22,11 +22,10 @@ public class ItemAttractor : MonoBehaviour
 
         while (t < 1)
         {
-            Debug.Log("bro " + PullTime);
-            t += Time.deltaTime / PullTime;
+            target = gameObject.transform.position;
 
+            t += Time.deltaTime / PullTime;
             if (t > 1) t = 1;
-            Debug.Log("bro "+ Time.deltaTime);
             dropable.transform.position = Vector3.Lerp(start, target, t);
 
             yield return null;

@@ -7,6 +7,7 @@ public class MapGen : MonoBehaviour
 {
     public int ChunkSize = 100;
     public float scale = 20f;
+    public float scale2 = 5f;
     public TileObject[] Tiles;
     public Tilemap tilemap;
     int tempX;
@@ -60,6 +61,20 @@ public class MapGen : MonoBehaviour
     public TileBase GrassCornerBL;
     public TileBase GrassCornerBR;
 
+    public TileBase WaterFull;
+    public TileBase WaterRF;
+    public TileBase WaterTF;
+    public TileBase WaterLF;
+    public TileBase WaterBF;
+    public TileBase WaterRFBF;
+    public TileBase WaterLFBF;
+    public TileBase WaterRFTF;
+    public TileBase WaterLFTF;
+    public TileBase WaterRT;
+    public TileBase WaterRB;
+    public TileBase WaterLT;
+    public TileBase WaterLB;
+
     public static MapGen Instance { get; private set; }
     private void Awake()
     {
@@ -93,17 +108,27 @@ public class MapGen : MonoBehaviour
         {
             tempX = i % ChunkSize;
             tempY = i / ChunkSize;
+            float noise = Perlin.PerlinNoise(i % ChunkSize + x - ChunkSize / 2, i / ChunkSize + y - ChunkSize / 2, ChunkSize, scale, 1233245.123f, 436872.345f);
+            noise += Perlin.PerlinNoise(i % ChunkSize + x - ChunkSize / 2, i / ChunkSize + y - ChunkSize / 2, ChunkSize, scale2, 23245.63f, 536962.785f);
+            noise = noise / 2f;
 
-            if (Perlin.PerlinNoise(i % ChunkSize + x - ChunkSize/2, i / ChunkSize + y - ChunkSize/2 , ChunkSize, scale) > 0.5f)
+            noise = 1f - noise * 2f;
+            noise = 1f - Mathf.Abs(noise);
+            if (noise > 1f) Debug.Log("bro wat");
+            if (noise > 0.95f)
             {
                 Tiles[i] = new TileObject(tempX, tempY, TileType.Dirt);
             }
-            else
+            else if(noise > 0.5f)
             {
                 Tiles[i] = new TileObject(tempX, tempY, TileType.Grass);
             }
+            else
+            {
+                Tiles[i] = new TileObject(tempX, tempY, TileType.Water);
+            }
         }
-        SetTiles();
+        SetTiles2();
         tilemap.RefreshAllTiles();
         AdjustMap(x,y);
     }
@@ -213,6 +238,188 @@ public class MapGen : MonoBehaviour
 
         }
     }
+    public void SetTiles2()
+    {
+        byte TempByte = 0;
+        for (int i = 0; i < Tiles.Length; i++)
+        {
+            tempX = i % ChunkSize;
+            tempY = i / ChunkSize;
+            //tilemap.SetTile(new Vector3Int(tempX, tempY, 0), tileDictionary[Tiles[i].tileType]);
+            /*if (Tiles[i].tileType == TileType.Water)
+            {
+
+                TempByte = 0;
+                if (tempX == 0) continue;
+                if (tempX == ChunkSize - 1) continue;
+                if (tempY == 0) continue;
+                if (tempY == ChunkSize - 1) continue;
+
+                if (Tiles[i - 1 - ChunkSize].tileType == TileType.Water) TempByte += 0b10000000;
+                if (Tiles[i - ChunkSize].tileType == TileType.Water) TempByte += 0b01000000;
+                if (Tiles[i + 1 - ChunkSize].tileType == TileType.Water) TempByte += 0b00100000;
+                if (Tiles[i - 1].tileType == TileType.Water) TempByte += 0b00010000;
+                if (Tiles[i + 1].tileType == TileType.Water) TempByte += 0b00001000;
+                if (Tiles[i - 1 + ChunkSize].tileType == TileType.Water) TempByte += 0b000000100;
+                if (Tiles[i + ChunkSize].tileType == TileType.Water) TempByte += 0b000000010;
+                if (Tiles[i + 1 + ChunkSize].tileType == TileType.Water) TempByte += 0b000000001;
+
+                if (TempByte == 0b11111111) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterFull); continue; }
+
+                if ((TempByte & 0b01111010) == 0b01101000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRB); continue; }
+                if ((TempByte & 0b01111001) == 0b01101000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRB); continue; }
+                if ((TempByte & 0b11101010) == 0b01101000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRB); continue; }
+
+                if ((TempByte & 0b01011011) == 0b00001011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRT); continue; }
+                if ((TempByte & 0b00111011) == 0b00001011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRT); continue; }
+                if ((TempByte & 0b01001111) == 0b00001011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRT); continue; }
+
+                if ((TempByte & 0b11011010) == 0b11010000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterLB); continue; }
+                if ((TempByte & 0b11110010) == 0b11010000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterLB); continue; }
+                if ((TempByte & 0b11011100) == 0b11010000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterLB); continue; }
+
+                if ((TempByte & 0b01011110) == 0b00010110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterLT); continue; }
+                if ((TempByte & 0b10011110) == 0b00010110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterLT); continue; }
+                if ((TempByte & 0b01010111) == 0b00010110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterLT); continue; }
+
+                if ((TempByte & 0b11111101) == 0b11111000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterBF); continue; }
+                if ((TempByte & 0b11110111) == 0b11010110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterLF); continue; }
+                if ((TempByte & 0b11101111) == 0b01101011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRF); continue; }
+                if ((TempByte & 0b10111111) == 0b00011111) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterTF); continue; }
+
+                if ((TempByte & 0b11111010) == 0b11111000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterBF); continue; }
+                if ((TempByte & 0b11011110) == 0b11010110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterLF); continue; }
+                if ((TempByte & 0b01111011) == 0b01101011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRF); continue; }
+                if ((TempByte & 0b01011111) == 0b00011111) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterTF); continue; }
+
+                if (TempByte == 0b11011111) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterLFTF); continue; }
+                if (TempByte == 0b01111111) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRFTF); continue; }
+                if (TempByte == 0b11111011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRFBF); continue; }
+                if (TempByte == 0b11111110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterLFBF); continue; }
+
+                //if (TempByte == 0b11011011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassBottomLeftTopRight); continue; }
+                //if (TempByte == 0b01111110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassTopLeftToBottmRight); continue; }
+
+                tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassFull);
+            }*/
+            if (Tiles[i].tileType == TileType.Water)
+            {
+                 tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterFull);
+            }
+            else if (Tiles[i].tileType == TileType.Grass)
+            {
+                TempByte = 0;
+                if (tempX == 0) continue;
+                if (tempX == ChunkSize - 1) continue;
+                if (tempY == 0) continue;
+                if (tempY == ChunkSize - 1) continue;
+
+                if (Tiles[i - 1 - ChunkSize].tileType == TileType.Grass) TempByte += 0b10000000;
+                if (Tiles[i - ChunkSize].tileType == TileType.Grass) TempByte += 0b01000000;
+                if (Tiles[i + 1 - ChunkSize].tileType == TileType.Grass) TempByte += 0b00100000;
+                if (Tiles[i - 1].tileType == TileType.Grass) TempByte += 0b00010000;
+                if (Tiles[i + 1].tileType == TileType.Grass) TempByte += 0b00001000;
+                if (Tiles[i - 1 + ChunkSize].tileType == TileType.Grass) TempByte += 0b000000100;
+                if (Tiles[i + ChunkSize].tileType == TileType.Grass) TempByte += 0b000000010;
+                if (Tiles[i + 1 + ChunkSize].tileType == TileType.Grass) TempByte += 0b000000001;
+                bool water = false;
+                if (Tiles[i - 1 - ChunkSize].tileType == TileType.Water) water = true;
+                if (Tiles[i - ChunkSize].tileType == TileType.Water) water = true;
+                if (Tiles[i + 1 - ChunkSize].tileType == TileType.Water) water = true;
+                if (Tiles[i - 1].tileType == TileType.Water) water = true;
+                if (Tiles[i + 1].tileType == TileType.Water) water = true;
+                if (Tiles[i - 1 + ChunkSize].tileType == TileType.Water) water = true;
+                if (Tiles[i + ChunkSize].tileType == TileType.Water) water = true;
+                if (Tiles[i + 1 + ChunkSize].tileType == TileType.Water) water = true;
+
+                if (water)
+                {
+                    if (TempByte == 0b11111111) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassFull); continue; }
+
+                    if ((TempByte & 0b01111010) == 0b01101000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRB); continue; }
+                    if ((TempByte & 0b01111001) == 0b01101000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRB); continue; }
+                    if ((TempByte & 0b11101010) == 0b01101000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRB); continue; }
+
+                    if ((TempByte & 0b01011011) == 0b00001011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRT); continue; }
+                    if ((TempByte & 0b00111011) == 0b00001011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRT); continue; }
+                    if ((TempByte & 0b01001111) == 0b00001011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRT); continue; }
+
+                    if ((TempByte & 0b11011010) == 0b11010000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterLB); continue; }
+                    if ((TempByte & 0b11110010) == 0b11010000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterLB); continue; }
+                    if ((TempByte & 0b11011100) == 0b11010000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterLB); continue; }
+
+                    if ((TempByte & 0b01011110) == 0b00010110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterLT); continue; }
+                    if ((TempByte & 0b10011110) == 0b00010110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterLT); continue; }
+                    if ((TempByte & 0b01010111) == 0b00010110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassLT); continue; }
+
+                    if ((TempByte & 0b11111101) == 0b11111000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterBF); continue; }
+                    if ((TempByte & 0b11110111) == 0b11010110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterLF); continue; }
+                    if ((TempByte & 0b11101111) == 0b01101011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRF); continue; }
+                    if ((TempByte & 0b10111111) == 0b00011111) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterTF); continue; }
+
+                    if ((TempByte & 0b11111010) == 0b11111000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterBF); continue; }
+                    if ((TempByte & 0b11011110) == 0b11010110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterLF); continue; }
+                    if ((TempByte & 0b01111011) == 0b01101011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRF); continue; }
+                    if ((TempByte & 0b01011111) == 0b00011111) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterTF); continue; }
+
+                    if (TempByte == 0b11011111) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterLFTF); continue; }
+                    if (TempByte == 0b01111111) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRFTF); continue; }
+                    if (TempByte == 0b11111011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterRFBF); continue; }
+                    if (TempByte == 0b11111110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterLFBF); continue; }
+
+                    if (TempByte == 0b11011011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassBottomLeftTopRight); continue; }
+                    if (TempByte == 0b01111110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassTopLeftToBottmRight); continue; }
+
+                    tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterFull);
+                }
+                else
+                {
+                    if (TempByte == 0b11111111) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassFull); continue; }
+
+                    if ((TempByte & 0b01111010) == 0b01101000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassRB); continue; }
+                    if ((TempByte & 0b01111001) == 0b01101000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassRB); continue; }
+                    if ((TempByte & 0b11101010) == 0b01101000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassRB); continue; }
+
+                    if ((TempByte & 0b01011011) == 0b00001011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassRT); continue; }
+                    if ((TempByte & 0b00111011) == 0b00001011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassRT); continue; }
+                    if ((TempByte & 0b01001111) == 0b00001011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassRT); continue; }
+
+                    if ((TempByte & 0b11011010) == 0b11010000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassLB); continue; }
+                    if ((TempByte & 0b11110010) == 0b11010000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassLB); continue; }
+                    if ((TempByte & 0b11011100) == 0b11010000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassLB); continue; }
+
+                    if ((TempByte & 0b01011110) == 0b00010110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassLT); continue; }
+                    if ((TempByte & 0b10011110) == 0b00010110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassLT); continue; }
+                    if ((TempByte & 0b01010111) == 0b00010110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassLT); continue; }
+
+                    if ((TempByte & 0b11111101) == 0b11111000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassBF); continue; }
+                    if ((TempByte & 0b11110111) == 0b11010110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassLF); continue; }
+                    if ((TempByte & 0b11101111) == 0b01101011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassRF); continue; }
+                    if ((TempByte & 0b10111111) == 0b00011111) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassTf); continue; }
+
+                    if ((TempByte & 0b11111010) == 0b11111000) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassBF); continue; }
+                    if ((TempByte & 0b11011110) == 0b11010110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassLF); continue; }
+                    if ((TempByte & 0b01111011) == 0b01101011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassRF); continue; }
+                    if ((TempByte & 0b01011111) == 0b00011111) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassTf); continue; }
+
+                    if (TempByte == 0b11011111) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassLFTF); continue; }
+                    if (TempByte == 0b01111111) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassRFTF); continue; }
+                    if (TempByte == 0b11111011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassRFBF); continue; }
+                    if (TempByte == 0b11111110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassLFBF); continue; }
+
+                    if (TempByte == 0b11011011) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassBottomLeftTopRight); continue; }
+                    if (TempByte == 0b01111110) { tilemap.SetTile(new Vector3Int(tempX, tempY, 0), GrassTopLeftToBottmRight); continue; }
+
+                    tilemap.SetTile(new Vector3Int(tempX, tempY, 0), Dirt);
+                }
+            }
+            else
+            {
+                tilemap.SetTile(new Vector3Int(tempX, tempY, 0), Dirt);
+            }
+
+        }
+    }
     public void AdjustMap(float x, float y)
     {
         tilemap.transform.parent.position = new Vector3(x, y, 0);
@@ -234,5 +441,6 @@ public class TileObject
 public enum TileType
 {
     Grass,
-    Dirt
+    Dirt,
+    Water
 }

@@ -40,7 +40,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 		for(int i = 0; i < 100; i++)
         {
 			RandomSpawn = Random.insideUnitCircle*50;
-			PhotonNetwork.Instantiate(this.PigPrefab.name, new Vector3(RandomSpawn.x, RandomSpawn.y, 0f), Quaternion.identity, 0);
+			GameObject go = PhotonNetwork.Instantiate(this.PigPrefab.name, new Vector3(RandomSpawn.x, RandomSpawn.y, 0f), Quaternion.identity, 0);
+			go.transform.parent = transform;
 		}
 	}
 	public override void OnLeftRoom()
