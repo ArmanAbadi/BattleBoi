@@ -10,7 +10,6 @@ public class ItemAttractor : MonoBehaviour
     {
         if (collision.CompareTag(GlobalConstants.Tags.Dropable.ToString()))
         {
-            Debug.Log("pull");
             StartCoroutine(PullDropable(collision.gameObject));
         }
     }
@@ -22,6 +21,7 @@ public class ItemAttractor : MonoBehaviour
 
         while (t < 1)
         {
+            if(dropable == null) yield break;
             target = gameObject.transform.position;
 
             t += Time.deltaTime / PullTime;

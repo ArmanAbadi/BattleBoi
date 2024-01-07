@@ -9,6 +9,7 @@ public static class GlobalConstants
     public static string DeadTrigger = "Dead";
     public static string HorizontalVelocity = "HorizontalVelocity";
     public static string VerticalVelocity = "VerticalVelocity";
+    public static string Idle = "Idle";
     public static string HumanAttackUp = "HumanAttackUpNoWeapon";
     public static string HumanAttackDown = "HumanAttackDownNoWeapon";
     public static string HumanAttackLeft = "HumanAttackLeftNoWeapon";
@@ -49,8 +50,6 @@ public static class GlobalConstants
             if (PlayerController.Instance.IsFullHealth()) return;
             base.ActivateItem();
             PlayerController.Instance.Heal(HealthGain);
-
-            Debug.Log("use item");
         }
     }
 }

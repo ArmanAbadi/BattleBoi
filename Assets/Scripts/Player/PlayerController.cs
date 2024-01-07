@@ -74,8 +74,16 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.S)) Direction += Vector3.down;
 
         //if (Direction != Vector3.zero) transform.rotation = Quaternion.LookRotation(Vector3.forward, -Direction);
-        animator.SetFloat(GlobalConstants.HorizontalVelocity, Direction.x);
-        animator.SetFloat(GlobalConstants.VerticalVelocity, Direction.y);
+        if (Direction == Vector3.zero)
+        {
+            animator.SetBool(GlobalConstants.Idle, true);
+        }
+        else
+        {
+            animator.SetBool(GlobalConstants.Idle, false);
+            animator.SetFloat(GlobalConstants.HorizontalVelocity, Direction.x);
+            animator.SetFloat(GlobalConstants.VerticalVelocity, Direction.y);
+        }
     }
     void UpdateMovement()
     {
@@ -87,10 +95,10 @@ public class PlayerController : MonoBehaviour
         {
             if ( Time.time > AttackCoolDownMarker + AttackCooldown)
             {
-                if(Direction.y == -1) { animator.Play(GlobalConstants.HumanAttackDown); }
-                else if(Direction.x == -1) { animator.Play(GlobalConstants.HumanAttackLeft); }
-                else if(Direction.x == 1) { animator.Play(GlobalConstants.HumanAttackRight); }
-                else if (Direction.y == 1) { animator.Play(GlobalConstants.HumanAttackUp); }
+                if(animator.GetFloat(GlobalConstants.VerticalVelocity) == -1) { animator.Play(GlobalConstants.HumanAttackDown); }
+                else if(animator.GetFloat(GlobalConstants.HorizontalVelocity) == -1) { animator.Play(GlobalConstants.HumanAttackLeft); }
+                else if(animator.GetFloat(GlobalConstants.HorizontalVelocity) == 1) { animator.Play(GlobalConstants.HumanAttackRight); }
+                else if (animator.GetFloat(GlobalConstants.VerticalVelocity) == 1) { animator.Play(GlobalConstants.HumanAttackUp); }
                 else { animator.Play(GlobalConstants.HumanAttackDown); }
                 sword.Attack();
                 AttackCoolDownMarker = Time.time;
@@ -100,21 +108,16 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator AttackDelay(float delay)
     {
-        Debug.Log(delay);
         FreezePlayer = true;
         yield return new WaitForSeconds(delay);
         FreezePlayer = false;
     }
     public void TakeDamage(int dmg)
     {
-
-        Debug.Log("dmg");
         CurrentHealth -= dmg;
     }
     public void Heal(int heal)
     {
-
-        Debug.Log("heal");
         CurrentHealth += heal;
     }
     public bool IsFullHealth()

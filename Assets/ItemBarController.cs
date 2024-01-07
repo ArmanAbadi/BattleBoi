@@ -25,7 +25,7 @@ public class ItemBarController : MonoBehaviour
     
     public void RefreshItems()
     {
-        foreach(var item in PlayerInventory.Items)
+        foreach (var item in PlayerInventory.Items)
         {
             if (ItemButtons.ContainsKey(item.Key.itemType))
             {
