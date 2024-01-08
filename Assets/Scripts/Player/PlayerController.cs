@@ -102,14 +102,12 @@ public class PlayerController : MonoBehaviour
                 else { animator.Play(GlobalConstants.HumanAttackDown); }
                 sword.Attack();
                 AttackCoolDownMarker = Time.time;
-                StartCoroutine(AttackDelay(animator.GetCurrentAnimatorClipInfo(0)[0].clip.length));
+                FreezePlayer = true;
             }
         }
     }
-    IEnumerator AttackDelay(float delay)
+    public void Unfreeze()
     {
-        FreezePlayer = true;
-        yield return new WaitForSeconds(delay);
         FreezePlayer = false;
     }
     public void TakeDamage(int dmg)

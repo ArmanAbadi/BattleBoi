@@ -18,12 +18,12 @@ public class GameManager : MonoBehaviourPunCallbacks
 	[Tooltip("The prefab to use for representing the player")]
 	[SerializeField]
 	private GameObject playerPrefab;
-	[Tooltip("The prefab to use for representing the player")]
+	[Tooltip("The prefab to use for representing the Pig Monster")]
 	[SerializeField]
 	private GameObject PigPrefab;
-	[Tooltip("The prefab to use for representing the player")]
+	[Tooltip("The prefab to use for representing the Dirto Monster")]
 	[SerializeField]
-	private GameObject EvilPigPrefab;
+	private GameObject DirtoPrefab;
 	#endregion
 
 	void Start()
@@ -41,6 +41,12 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
 			RandomSpawn = Random.insideUnitCircle*50;
 			GameObject go = PhotonNetwork.Instantiate(this.PigPrefab.name, new Vector3(RandomSpawn.x, RandomSpawn.y, 0f), Quaternion.identity, 0);
+			go.transform.parent = transform;
+		}
+		for (int i = 0; i < 100; i++)
+		{
+			RandomSpawn = Random.insideUnitCircle * 50;
+			GameObject go = PhotonNetwork.Instantiate(this.DirtoPrefab.name, new Vector3(RandomSpawn.x, RandomSpawn.y, 0f), Quaternion.identity, 0);
 			go.transform.parent = transform;
 		}
 	}

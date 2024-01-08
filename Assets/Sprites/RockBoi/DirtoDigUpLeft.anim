@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: HitVFX
+  m_Name: DirtoDigUpLeft
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -20,15 +20,15 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 634049275, guid: c2493dad24c33de4a9618ec4e0603e50, type: 3}
+      value: {fileID: 366010976, guid: ffb45e8d1da72c34ab5187cc6e919561, type: 3}
     - time: 0.16666667
-      value: {fileID: -202469, guid: c2493dad24c33de4a9618ec4e0603e50, type: 3}
-    - time: 0.25
-      value: {fileID: 1362637382, guid: c2493dad24c33de4a9618ec4e0603e50, type: 3}
-    - time: 0.3
-      value: {fileID: 298309388, guid: c2493dad24c33de4a9618ec4e0603e50, type: 3}
-    - time: 0.36666667
-      value: {fileID: 298309388, guid: c2493dad24c33de4a9618ec4e0603e50, type: 3}
+      value: {fileID: 629491515, guid: ffb45e8d1da72c34ab5187cc6e919561, type: 3}
+    - time: 0.33333334
+      value: {fileID: -1394082234, guid: ffb45e8d1da72c34ab5187cc6e919561, type: 3}
+    - time: 0.5
+      value: {fileID: -1483374510, guid: ffb45e8d1da72c34ab5187cc6e919561, type: 3}
+    - time: 0.6666667
+      value: {fileID: -1483374510, guid: ffb45e8d1da72c34ab5187cc6e919561, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -48,17 +48,17 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 634049275, guid: c2493dad24c33de4a9618ec4e0603e50, type: 3}
-    - {fileID: -202469, guid: c2493dad24c33de4a9618ec4e0603e50, type: 3}
-    - {fileID: 1362637382, guid: c2493dad24c33de4a9618ec4e0603e50, type: 3}
-    - {fileID: 298309388, guid: c2493dad24c33de4a9618ec4e0603e50, type: 3}
-    - {fileID: 298309388, guid: c2493dad24c33de4a9618ec4e0603e50, type: 3}
+    - {fileID: 366010976, guid: ffb45e8d1da72c34ab5187cc6e919561, type: 3}
+    - {fileID: 629491515, guid: ffb45e8d1da72c34ab5187cc6e919561, type: 3}
+    - {fileID: -1394082234, guid: ffb45e8d1da72c34ab5187cc6e919561, type: 3}
+    - {fileID: -1483374510, guid: ffb45e8d1da72c34ab5187cc6e919561, type: 3}
+    - {fileID: -1483374510, guid: ffb45e8d1da72c34ab5187cc6e919561, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.38333336
+    m_StopTime: 0.68333334
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -78,8 +78,8 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
-  - time: 0.36666667
-    functionName: DestroyThisGameObject
+  - time: 0.6666667
+    functionName: Unfreeze
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

@@ -13,7 +13,7 @@ public class AIController : MonoBehaviour
     protected Rigidbody2D rigidbody2D;
     protected Animator animator;
     public bool IsDead = false;
-    protected float AggroRange = 4f;
+    public float AggroRange = 4f;
 
     public float AttackCooldown = 1f;
     protected float AttackCoolDownMarker = 0f;
@@ -57,11 +57,19 @@ public class AIController : MonoBehaviour
             Direction += (PlayerController.Instance.transform.position - transform.position).normalized;
         }
     }
+    protected virtual Vector3 BasicFollowDirection()
+    {
+            return (PlayerController.Instance.transform.position - transform.position).normalized;
+    }
+    protected virtual Vector3 BasicFleeDirection()
+    {
+        return -(PlayerController.Instance.transform.position - transform.position).normalized;
+    }
     protected void RandomWalk()
     {
         Direction = new Vector3(Random.Range(-1f, 2f), Random.Range(-1f, 2f), 0);
     }
-    protected void Attack()
+    protected virtual void Attack()
     {
     }
     protected void Death()
