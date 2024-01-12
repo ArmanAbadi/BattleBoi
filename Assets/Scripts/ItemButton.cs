@@ -8,7 +8,8 @@ using static GlobalConstants;
 public class ItemButton : MonoBehaviour
 {
     public Image Image;
-    TextMeshProUGUI ItemCountText;
+    public TextMeshProUGUI ItemCountText;
+    public Button button;
     ItemType itemType;
     int count = 0;
     int Count
@@ -23,14 +24,12 @@ public class ItemButton : MonoBehaviour
 
     public void SetItemButton(Item item, int itemCount)
     {
-        ItemCountText = GetComponentInChildren<TextMeshProUGUI>();
-        
         itemType = item.itemType;
         Image.sprite  = item.ItemSprite;
         ItemCountText.text = itemCount.ToString();
         count = itemCount;
 
-        GetComponent<Button>().onClick.AddListener(item.ActivateItem);
+        button.onClick.AddListener(item.ActivateItem);
     }
     public void SetCount(int value)
     {

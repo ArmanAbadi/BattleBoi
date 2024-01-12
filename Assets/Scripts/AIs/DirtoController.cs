@@ -8,6 +8,11 @@ public class DirtoController : AIController
     public int Damage = 10;
     bool Freeze = false;
     bool Unrooted = false;
+    public GameObject DirtProjectilePrefab;
+
+    public float BulletSpeed;
+    public TagSelectorAttribute[] Targets;
+    public Transform ProjectileSpawnLocation;
     protected override IEnumerator MovementUpdate()
     {
         while (!IsDead)
@@ -34,6 +39,7 @@ public class DirtoController : AIController
                 animator.SetTrigger(GlobalConstants.Attack);
                 AttackCoolDownMarker = Time.time;
                 Freeze = true;
+
                 yield return null;
                 continue;
             }
@@ -55,9 +61,13 @@ public class DirtoController : AIController
                     Direction = BasicFleeDirection();
                 }
             }
-            if (Direction.x != 0f)
+            if (Direction.x > 0f)
             {
-                animator.SetFloat(GlobalConstants.HorizontalVelocity, Direction.x);
+                animator.SetFloat(GlobalConstants.HorizontalVelocity, 1);
+            }
+            else if(Direction.x < 0f)
+            {
+                animator.SetFloat(GlobalConstants.HorizontalVelocity, -1);
             }
             rigidbody2D.velocity = Random.Range(0f, Speed) * Direction.normalized;
             yield return null;
@@ -73,6 +83,14 @@ public class DirtoController : AIController
             Death();
         }
     }
+    protected override void Death()
+    {
+        if (projectile != null && projectile.GetComponent<Rigidbody2D>().velocity.magnitude == 0) Destroy(projectile.gameObject);
+        rigidbody2D.velocity = Vector2.zero;
+        IsDead = true;
+        animator.Play(GlobalConstants.DeadTrigger);
+        GetComponent<BoxCollider2D>().isTrigger = true;
+    }
     bool ReadyToAttack()
     {
         return (Time.time > AttackCoolDownMarker + AttackCooldown);
@@ -83,7 +101,15 @@ public class DirtoController : AIController
     }
     public void Unfreeze()
     {
-        Debug.Log("unfr:");
         Freeze = false;
+    }
+    Projectile projectile;
+    void SpawnProjectile()
+    {
+        projectile = Instantiate(DirtProjectilePrefab, ProjectileSpawnLocation.position, Quaternion.identity).GetComponent<Projectile>();
+    }
+    public void ShootProjectile()
+    {
+        projectile.Shoot(Damage, BasicFollowDirection(), BulletSpeed);
     }
 }

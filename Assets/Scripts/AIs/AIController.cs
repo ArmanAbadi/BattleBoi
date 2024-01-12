@@ -72,7 +72,7 @@ public class AIController : MonoBehaviour
     protected virtual void Attack()
     {
     }
-    protected void Death()
+    protected virtual void Death()
     {
         rigidbody2D.velocity = Vector2.zero;
         IsDead = true;
@@ -95,6 +95,16 @@ public class AIController : MonoBehaviour
         {
             CurrentHealth = 0;
             Death();
+        }
+    }public void DestroyThyself()
+    {
+        if (GetComponent<PhotonView>())
+        {
+            PhotonNetwork.Destroy(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
         }
     }
 }

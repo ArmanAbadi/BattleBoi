@@ -28,7 +28,8 @@ public static class GlobalConstants
     public enum ItemType
     {
         Weapon,
-        PigMeat
+        HealthPotion,
+        Resource
     }
     public class Item
     {
@@ -46,13 +47,24 @@ public static class GlobalConstants
         public int HealthGain = 5;
         public HealthPotion()
         {
-            itemType = ItemType.PigMeat;
+            itemType = ItemType.HealthPotion;
         }
         public override void ActivateItem()
         {
             if (PlayerController.Instance.IsFullHealth()) return;
             base.ActivateItem();
             PlayerController.Instance.Heal(HealthGain);
+        }
+    }
+    [Serializable]
+    public class Resource : Item
+    {
+        public Resource()
+        {
+            itemType = ItemType.Resource;
+        }
+        public override void ActivateItem()
+        {
         }
     }
 }
