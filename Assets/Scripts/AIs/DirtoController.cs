@@ -11,7 +11,6 @@ public class DirtoController : AIController
     public GameObject DirtProjectilePrefab;
 
     public float BulletSpeed;
-    public TagSelectorAttribute[] Targets;
     public Transform ProjectileSpawnLocation;
     protected override IEnumerator MovementUpdate()
     {

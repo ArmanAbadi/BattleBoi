@@ -12,7 +12,8 @@ public static class GlobalConstants
     public static string Idle = "Idle";
     public static string Attack = "Attack";
     public static string DigUp = "DigUp";
-    public static string DigDown = "DigDown";
+    public static string DigDown = "DigDown"; 
+    public static string Aggro = "Aggro";
     public static string HumanAttackUp = "HumanAttackUpNoWeapon";
     public static string HumanAttackDown = "HumanAttackDownNoWeapon";
     public static string HumanAttackLeft = "HumanAttackLeftNoWeapon";

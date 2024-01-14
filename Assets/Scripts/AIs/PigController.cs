@@ -5,7 +5,15 @@ using UnityEngine;
 public class PigController : AIController
 {
     public float AggroAlliesRange = 10f;
-    protected bool Aggrod = false;
+    bool aggrod = false;
+    protected bool Aggrod
+    {
+        get { return aggrod; }
+        set {
+            aggrod = value;
+            animator.SetBool(GlobalConstants.Aggro, aggrod);
+        }
+    }
     public float AggroSpeed = 5f;
     public int Damage = 10;
     protected void Start()

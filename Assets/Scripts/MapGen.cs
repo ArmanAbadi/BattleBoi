@@ -61,6 +61,7 @@ public class MapGen : MonoBehaviour
     public TileBase GrassCornerBL;
     public TileBase GrassCornerBR;
 
+    public TileBase AnimatedWater;
     public TileBase WaterFull;
     public TileBase WaterRF;
     public TileBase WaterTF;
@@ -304,7 +305,9 @@ public class MapGen : MonoBehaviour
             }*/
             if (Tiles[i].tileType == TileType.Water)
             {
-                 tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterFull);
+                int TempInt = Random.Range(0, 6);
+                if(TempInt == 5) tilemap.SetTile(new Vector3Int(tempX, tempY, 0), AnimatedWater);
+                else tilemap.SetTile(new Vector3Int(tempX, tempY, 0), WaterFull);
             }
             else if (Tiles[i].tileType == TileType.Grass)
             {
