@@ -24,6 +24,10 @@ public class GameManager : MonoBehaviourPunCallbacks
 	[Tooltip("The prefab to use for representing the Dirto Monster")]
 	[SerializeField]
 	private GameObject DirtoPrefab;
+	[Tooltip("The prefab to use for representing the TreeMan Monster")]
+	[SerializeField]
+	private GameObject TreeManPrefab;
+
 	#endregion
 
 	void Start()
@@ -47,6 +51,12 @@ public class GameManager : MonoBehaviourPunCallbacks
 		{
 			RandomSpawn = Random.insideUnitCircle * 50;
 			GameObject go = PhotonNetwork.Instantiate(this.DirtoPrefab.name, new Vector3(RandomSpawn.x, RandomSpawn.y, 0f), Quaternion.identity, 0);
+			go.transform.parent = transform;
+		}
+		for (int i = 0; i < 10; i++)
+		{
+			RandomSpawn = Random.insideUnitCircle * 10;
+			GameObject go = PhotonNetwork.Instantiate(this.TreeManPrefab.name, new Vector3(RandomSpawn.x, RandomSpawn.y, 0f), Quaternion.identity, 0);
 			go.transform.parent = transform;
 		}
 	}

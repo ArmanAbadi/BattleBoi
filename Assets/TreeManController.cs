@@ -10,13 +10,15 @@ public class TreeManController : AIController
     bool TreeAwoken = false;
     public GameObject ProjectilePrefab;
 
-    public float BulletSpeed = 5f;
+    public float BulletSpeed = 3f;
 
-    List<Projectile> projectile = new List<Projectile>();
+    List<Projectile> Projectiles = new List<Projectile>();
 
     public GameObject TreeSpawnpointTop;
     public GameObject TreeSpawnpointLeft;
     public GameObject TreeSpawnpointRight;
+
+    public float ShootDelayTime = 1f;
     protected override IEnumerator MovementUpdate()
     {
         while (!IsDead)
@@ -26,20 +28,17 @@ public class TreeManController : AIController
             if (PlayerDistance() > AggroRange)
             {
                 animator.SetBool(GlobalConstants.Aggro, false); 
-                TreeAwoken = false;
             }
             else if (PlayerDistance() < AttackRange && ReadyToAttack() && TreeAwoken)
             {
-                animator.SetTrigger(GlobalConstants.Attack);
                 AttackCoolDownMarker = Time.time;
-
+                SpawnProjectile();
                 yield return null;
                 continue;
             }
             else
             {
                 animator.SetBool(GlobalConstants.Aggro, true);
-                TreeAwoken = true;
                 Direction = BasicFollowDirection();
             }
             if (Direction.x > 0f)
@@ -65,9 +64,9 @@ public class TreeManController : AIController
     }
     protected override void Death()
     {
-        for(int i = projectile.Count-1; i >= 0; i--)
+        for(int i = Projectiles.Count-1; i >= 0; i--)
         {
-            if (projectile != null && projectile[i].GetComponent<Rigidbody2D>().velocity.magnitude == 0) Destroy(projectile[i].gameObject);
+            if (Projectiles != null && Projectiles[i].GetComponent<Rigidbody2D>().velocity.magnitude == 0) Destroy(Projectiles[i].gameObject);
         }
         IsDead = true;
         animator.Play(GlobalConstants.DeadTrigger);
@@ -83,9 +82,35 @@ public class TreeManController : AIController
     }
     void SpawnProjectile()
     {
-        //projectile.Add(Instantiate(DirtProjectilePrefab, ProjectileSpawnLocation.position, Quaternion.identity).GetComponent<Projectile>());
-        //Projectile tempProjectile = Instantiate(DirtProjectilePrefab, ProjectileSpawnLocation.position, Quaternion.identity).GetComponent<Projectile>();
-        //tempProjectile.Shoot(Damage, BasicFollowDirection(), BulletSpeed);
-        //projectile.Add(tempProjectile);
+        Projectile tempProjectile = Instantiate(ProjectilePrefab, TreeSpawnpointTop.transform.position, TreeSpawnpointTop.transform.rotation, TreeSpawnpointTop.transform).GetComponent<Projectile>();
+        tempProjectile.GetComponent<SpriteRenderer>().sortingOrder = 3;
+        Projectiles.Add(tempProjectile);
+        StartCoroutine(ShootWithDelay(tempProjectile));
+
+        tempProjectile = Instantiate(ProjectilePrefab, TreeSpawnpointRight.transform.position, TreeSpawnpointRight.transform.rotation, TreeSpawnpointRight.transform).GetComponent<Projectile>();
+        tempProjectile.GetComponent<SpriteRenderer>().sortingOrder = 1;
+        Projectiles.Add(tempProjectile);
+        StartCoroutine(ShootWithDelay(tempProjectile));
+
+        tempProjectile = Instantiate(ProjectilePrefab, TreeSpawnpointLeft.transform.position, TreeSpawnpointLeft.transform.rotation, TreeSpawnpointLeft.transform).GetComponent<Projectile>();
+        tempProjectile.GetComponent<SpriteRenderer>().sortingOrder = 1;
+        Projectiles.Add(tempProjectile);
+        StartCoroutine(ShootWithDelay(tempProjectile));
+    }
+    IEnumerator ShootWithDelay(Projectile projectile)
+    {
+        yield return new WaitForSeconds(ShootDelayTime);
+        projectile.transform.parent = null;
+        Vector3 Direction = (PlayerController.Instance.transform.position - projectile.transform.position).normalized;
+        projectile.transform.rotation = Quaternion.FromToRotation(transform.up, Direction);
+        projectile.Shoot(Damage, Direction, BulletSpeed);
+    }
+    public void Awoken()
+    {
+        TreeAwoken = true;
+    }
+    public void Slept()
+    {
+        TreeAwoken = false;
     }
 }
