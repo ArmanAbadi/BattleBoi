@@ -6,6 +6,7 @@ public class TreeManController : AIController
 {
 
     public float AttackRange = 2f;
+    public float DeAggroRange = 5f;
     public int Damage = 10;
     bool TreeAwoken = false;
     public GameObject ProjectilePrefab;
@@ -25,7 +26,7 @@ public class TreeManController : AIController
         {
             Direction = Vector3.zero;
 
-            if (PlayerDistance() > AggroRange)
+            if (PlayerDistance() > DeAggroRange)
             {
                 animator.SetBool(GlobalConstants.Aggro, false); 
             }
@@ -36,7 +37,7 @@ public class TreeManController : AIController
                 yield return null;
                 continue;
             }
-            else
+            else if(PlayerDistance() < AggroRange)
             {
                 animator.SetBool(GlobalConstants.Aggro, true);
                 Direction = BasicFollowDirection();
@@ -66,10 +67,14 @@ public class TreeManController : AIController
     {
         for(int i = Projectiles.Count-1; i >= 0; i--)
         {
-            if (Projectiles != null && Projectiles[i].GetComponent<Rigidbody2D>().velocity.magnitude == 0) Destroy(Projectiles[i].gameObject);
+            if (Projectiles != null && Projectiles[i] != null && Projectiles[i].GetComponent<Rigidbody2D>().velocity.magnitude == 0)
+            {
+                Destroy(Projectiles[i].gameObject);
+                Projectiles.RemoveAt(i);
+            }
         }
         IsDead = true;
-        animator.Play(GlobalConstants.DeadTrigger);
+        animator.SetTrigger(GlobalConstants.DeadTrigger);
         GetComponent<BoxCollider2D>().isTrigger = true;
     }
     bool ReadyToAttack()
@@ -100,9 +105,11 @@ public class TreeManController : AIController
     IEnumerator ShootWithDelay(Projectile projectile)
     {
         yield return new WaitForSeconds(ShootDelayTime);
+        if (projectile == null) yield break;
         projectile.transform.parent = null;
         Vector3 Direction = (PlayerController.Instance.transform.position - projectile.transform.position).normalized;
         projectile.transform.rotation = Quaternion.FromToRotation(transform.up, Direction);
+        projectile.GetComponent<BoxCollider2D>().enabled = true;
         projectile.Shoot(Damage, Direction, BulletSpeed);
     }
     public void Awoken()

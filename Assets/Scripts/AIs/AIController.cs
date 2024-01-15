@@ -96,7 +96,8 @@ public class AIController : MonoBehaviour
             CurrentHealth = 0;
             Death();
         }
-    }public void DestroyThyself()
+    }
+    public void DestroyThyself()
     {
         if (GetComponent<PhotonView>())
         {

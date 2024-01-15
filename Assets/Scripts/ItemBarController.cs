@@ -21,26 +21,29 @@ public class ItemBarController : MonoBehaviour
     }
     public GameObject ItemButtonPrefab;
 
-    Dictionary<ItemType, ItemButton> ItemButtons = new Dictionary<ItemType, ItemButton>();
+    Dictionary<ItemName, ItemButton> ItemButtons = new Dictionary<ItemName, ItemButton>();
     
     public void RefreshItems()
     {
         foreach (var item in PlayerInventory.Items)
         {
-            if (ItemButtons.ContainsKey(item.Key.itemType))
+            if (ItemButtons.ContainsKey(item.Key.itemName))
             {
-                ItemButtons[item.Key.itemType].SetCount(item.Value);
+                ItemButtons[item.Key.itemName].SetCount(item.Value);
                 if (item.Value <= 0)
                 {
-                    Destroy(ItemButtons[item.Key.itemType].gameObject);
-                    ItemButtons.Remove(item.Key.itemType);
+                    Destroy(ItemButtons[item.Key.itemName].gameObject);
+                    ItemButtons.Remove(item.Key.itemName);
                 }
             }
             else
             {
-                GameObject itemButton = Instantiate(ItemButtonPrefab, transform);
-                ItemButtons.Add(item.Key.itemType, itemButton.GetComponent<ItemButton>());
-                itemButton.GetComponent<ItemButton>().SetItemButton(item.Key, item.Value);
+                if (item.Value > 0)
+                {
+                    GameObject itemButton = Instantiate(ItemButtonPrefab, transform);
+                    ItemButtons.Add(item.Key.itemName, itemButton.GetComponent<ItemButton>());
+                    itemButton.GetComponent<ItemButton>().SetItemButton(item.Key, item.Value);
+                }
             }
         }
     }

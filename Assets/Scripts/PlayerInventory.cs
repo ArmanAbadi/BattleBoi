@@ -10,7 +10,7 @@ public static class PlayerInventory
     {
         foreach(var item in Items)
         {
-            if(item.Key.itemType == Item.itemType)
+            if(item.Key.itemName == Item.itemName)
             {
                 Items[item.Key]++;
                 ItemBarController.Instance.RefreshItems();
@@ -24,7 +24,7 @@ public static class PlayerInventory
     {
         foreach (var item in Items)
         {
-            if (item.Key.itemType == Item.itemType)
+            if (item.Key.itemName == Item.itemName)
             {
                 Items[item.Key]--;
                 ItemBarController.Instance.RefreshItems();

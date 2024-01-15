@@ -6,16 +6,16 @@ using static GlobalConstants;
 
 public class PickupableItem : MonoBehaviour
 {
-    public Resource IronOre;
+    public Resource resource;
     public void Start()
     {
-        GetComponent<SpriteRenderer>().sprite = IronOre.ItemSprite;
+        GetComponent<SpriteRenderer>().sprite = resource.ItemSprite;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag(GlobalConstants.Tags.Player.ToString()))
         {
-            PlayerInventory.AddItem(IronOre);
+            PlayerInventory.AddItem(resource);
             PhotonNetwork.Destroy(gameObject);
         }
     }

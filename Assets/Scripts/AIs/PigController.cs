@@ -42,8 +42,8 @@ public class PigController : AIController
         {
             RandomWalk();
         }
-        
-        animator.SetFloat(GlobalConstants.HorizontalVelocity, Direction.x);
+        if (Direction.x > 0) { animator.SetFloat(GlobalConstants.HorizontalVelocity, 1); }
+        if (Direction.x < 0) { animator.SetFloat(GlobalConstants.HorizontalVelocity, -1); }
     }
     protected override void UpdateMovement()
     {

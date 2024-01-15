@@ -53,9 +53,9 @@ public class GameManager : MonoBehaviourPunCallbacks
 			GameObject go = PhotonNetwork.Instantiate(this.DirtoPrefab.name, new Vector3(RandomSpawn.x, RandomSpawn.y, 0f), Quaternion.identity, 0);
 			go.transform.parent = transform;
 		}
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 50; i++)
 		{
-			RandomSpawn = Random.insideUnitCircle * 10;
+			RandomSpawn = Random.insideUnitCircle * 50;
 			GameObject go = PhotonNetwork.Instantiate(this.TreeManPrefab.name, new Vector3(RandomSpawn.x, RandomSpawn.y, 0f), Quaternion.identity, 0);
 			go.transform.parent = transform;
 		}

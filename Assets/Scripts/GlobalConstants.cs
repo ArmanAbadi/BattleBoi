@@ -32,8 +32,15 @@ public static class GlobalConstants
         HealthPotion,
         Resource
     }
+    public enum ItemName
+    {
+        PigMeat,
+        IronOre,
+        Stick
+    }
     public class Item
     {
+        public ItemName itemName;
         public ItemType itemType;
         public Sprite ItemSprite;
 
