@@ -5,19 +5,21 @@ using UnityEngine;
 
 public static class GlobalConstants
 {
-    public static string SlashTrigger = "Slash";
-    public static string DeadTrigger = "Dead";
-    public static string HorizontalVelocity = "HorizontalVelocity";
-    public static string VerticalVelocity = "VerticalVelocity";
-    public static string Idle = "Idle";
-    public static string Attack = "Attack";
-    public static string DigUp = "DigUp";
-    public static string DigDown = "DigDown"; 
-    public static string Aggro = "Aggro";
-    public static string HumanAttackUp = "HumanAttackUpNoWeapon";
-    public static string HumanAttackDown = "HumanAttackDownNoWeapon";
-    public static string HumanAttackLeft = "HumanAttackLeftNoWeapon";
-    public static string HumanAttackRight = "HumanAttackRightNoWeapon";
+    public const int MaxBagSize = 25;
+
+    public const string SlashTrigger = "Slash";
+    public const string DeadTrigger = "Dead";
+    public const string HorizontalVelocity = "HorizontalVelocity";
+    public const string VerticalVelocity = "VerticalVelocity";
+    public const string Idle = "Idle";
+    public const string Attack = "Attack";
+    public const string DigUp = "DigUp";
+    public const string DigDown = "DigDown"; 
+    public const string Aggro = "Aggro";
+    public const string HumanAttackUp = "HumanAttackUpNoWeapon";
+    public const string HumanAttackDown = "HumanAttackDownNoWeapon";
+    public const string HumanAttackLeft = "HumanAttackLeftNoWeapon";
+    public const string HumanAttackRight = "HumanAttackRightNoWeapon";
 
     public enum Tags
     {
@@ -28,12 +30,13 @@ public static class GlobalConstants
     }
     public enum ItemType
     {
-        Weapon,
-        HealthPotion,
+        Equippable,
+        Consumable,
         Resource
     }
     public enum ItemName
     {
+        none,
         PigMeat,
         IronOre,
         Stick
@@ -42,7 +45,8 @@ public static class GlobalConstants
     {
         public ItemName itemName;
         public ItemType itemType;
-        public Sprite ItemSprite;
+        public Sprite itemSprite;
+        public int itemCount = 0;
 
         public virtual void ActivateItem()
         {
@@ -55,7 +59,7 @@ public static class GlobalConstants
         public int HealthGain = 5;
         public HealthPotion()
         {
-            itemType = ItemType.HealthPotion;
+            itemType = ItemType.Consumable;
         }
         public override void ActivateItem()
         {

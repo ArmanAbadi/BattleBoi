@@ -9,7 +9,7 @@ public class PickupableItem : MonoBehaviour
     public Resource resource;
     public void Start()
     {
-        GetComponent<SpriteRenderer>().sprite = resource.ItemSprite;
+        GetComponent<SpriteRenderer>().sprite = resource.itemSprite;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {

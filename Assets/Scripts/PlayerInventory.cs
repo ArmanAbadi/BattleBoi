@@ -5,31 +5,49 @@ using static GlobalConstants;
 
 public static class PlayerInventory
 {
-    public static Dictionary<Item, int> Items = new Dictionary<Item, int>();
+    public static Dictionary<ItemName, Item> Items = new Dictionary<ItemName, Item>();
+    public static ItemName[] InventoryItems = new ItemName[GlobalConstants.MaxBagSize];
     public static void AddItem(Item Item)
     {
-        foreach(var item in Items)
+        if (Items.ContainsKey(Item.itemName))
         {
-            if(item.Key.itemName == Item.itemName)
+            Items[Item.itemName].itemCount++;
+        }
+        else
+        {
+            for (int i = 0; i < InventoryItems.Length; i++)
             {
-                Items[item.Key]++;
-                ItemBarController.Instance.RefreshItems();
-                return;
+                if (InventoryItems[i] == ItemName.none)
+                {
+                    InventoryItems[i] = Item.itemName;
+                    Items.Add(Item.itemName, Item);
+                    Items[Item.itemName].itemCount = 1;
+                    break;
+                }
             }
         }
-        Items.Add(Item, 1);
         ItemBarController.Instance.RefreshItems();
+        PlayerBag.Instance.RefreshItems();
     }
     public static void UseItem(Item Item)
     {
-        foreach (var item in Items)
+        if (Items.ContainsKey(Item.itemName))
         {
-            if (item.Key.itemName == Item.itemName)
+            Items[Item.itemName].itemCount--;
+            if (Items[Item.itemName].itemCount <= 0)
             {
-                Items[item.Key]--;
-                ItemBarController.Instance.RefreshItems();
-                return;
+                for (int i = 0; i < InventoryItems.Length; i++)
+                {
+                    if (InventoryItems[i] == Item.itemName)
+                    {
+                        Items.Remove(Item.itemName);
+                        InventoryItems[i] = ItemName.none;
+                        break;
+                    }
+                }
             }
         }
+        ItemBarController.Instance.RefreshItems();
+        PlayerBag.Instance.RefreshItems();
     }
 }

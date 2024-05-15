@@ -22,12 +22,11 @@ public class ItemButton : MonoBehaviour
         }
     }
 
-    public void SetItemButton(Item item, int itemCount)
+    public void SetItemButton(Item item)
     {
         itemType = item.itemType;
-        Image.sprite  = item.ItemSprite;
-        ItemCountText.text = itemCount.ToString();
-        count = itemCount;
+        Image.sprite  = item.itemSprite;
+        Count = item.itemCount;
 
         button.onClick.AddListener(item.ActivateItem);
     }

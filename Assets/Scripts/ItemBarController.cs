@@ -21,30 +21,31 @@ public class ItemBarController : MonoBehaviour
     }
     public GameObject ItemButtonPrefab;
 
-    Dictionary<ItemName, ItemButton> ItemButtons = new Dictionary<ItemName, ItemButton>();
-    
+    List<GameObject> items = new List<GameObject>();
+
+    private void OnEnable()
+    {
+        RefreshItems();
+    }
     public void RefreshItems()
     {
-        foreach (var item in PlayerInventory.Items)
+        ClearItems();
+        for (int i = 0; i < GlobalConstants.MaxBagSize; i++)
         {
-            if (ItemButtons.ContainsKey(item.Key.itemName))
+            if (PlayerInventory.InventoryItems[i] != ItemName.none && PlayerInventory.Items[PlayerInventory.InventoryItems[i]].itemType == ItemType.Consumable)
             {
-                ItemButtons[item.Key.itemName].SetCount(item.Value);
-                if (item.Value <= 0)
-                {
-                    Destroy(ItemButtons[item.Key.itemName].gameObject);
-                    ItemButtons.Remove(item.Key.itemName);
-                }
+                GameObject itemButton = Instantiate(ItemButtonPrefab, transform);
+                itemButton.GetComponent<ItemButton>().SetItemButton(PlayerInventory.Items[PlayerInventory.InventoryItems[i]]);
+                items.Add(itemButton);
             }
-            else
-            {
-                if (item.Value > 0)
-                {
-                    GameObject itemButton = Instantiate(ItemButtonPrefab, transform);
-                    ItemButtons.Add(item.Key.itemName, itemButton.GetComponent<ItemButton>());
-                    itemButton.GetComponent<ItemButton>().SetItemButton(item.Key, item.Value);
-                }
-            }
+        }
+    }
+    void ClearItems()
+    {
+        for (int i = items.Count - 1; i >= 0; i--)
+        {
+            Destroy(items[i]);
+            items.RemoveAt(i);
         }
     }
 }

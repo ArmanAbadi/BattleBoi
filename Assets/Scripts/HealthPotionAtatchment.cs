@@ -10,7 +10,7 @@ public class HealthPotionAtatchment: MonoBehaviour
 
     public void Start()
     {
-        GetComponent<SpriteRenderer>().sprite = healthPotion.ItemSprite;
+        GetComponent<SpriteRenderer>().sprite = healthPotion.itemSprite;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
