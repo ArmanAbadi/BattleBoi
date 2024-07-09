@@ -1,4 +1,3 @@
-using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,7 +15,6 @@ public class PickupableItem : MonoBehaviour
         if (collision.CompareTag(GlobalConstants.Tags.Player.ToString()))
         {
             PlayerInventory.AddItem(resource);
-            PhotonNetwork.Destroy(gameObject);
         }
     }
 }

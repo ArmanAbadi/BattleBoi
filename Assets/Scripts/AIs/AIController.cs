@@ -1,4 +1,3 @@
-using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -83,7 +82,7 @@ public class AIController : MonoBehaviour
     {
         foreach (GameObject dropable in DropablePrefabs)
         {
-            PhotonNetwork.Instantiate(dropable.name, transform.position, Quaternion.identity);
+            //PhotonNetwork.Instantiate(dropable.name, transform.position, Quaternion.identity);
         }
     }
     public virtual void TakeDmg(int dmg)
@@ -99,13 +98,6 @@ public class AIController : MonoBehaviour
     }
     public void DestroyThyself()
     {
-        if (GetComponent<PhotonView>())
-        {
-            PhotonNetwork.Destroy(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        
     }
 }

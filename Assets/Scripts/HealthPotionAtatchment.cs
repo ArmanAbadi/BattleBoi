@@ -1,4 +1,3 @@
-using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,7 +16,6 @@ public class HealthPotionAtatchment: MonoBehaviour
         if (collision.CompareTag(GlobalConstants.Tags.Player.ToString()))
         {
             PlayerInventory.AddItem(healthPotion);
-            PhotonNetwork.Destroy(gameObject);
         }
     }
 }

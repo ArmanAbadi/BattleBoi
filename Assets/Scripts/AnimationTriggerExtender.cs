@@ -1,4 +1,3 @@
-using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,13 +18,6 @@ public class AnimationTriggerExtender : MonoBehaviour
     }
     public void DestroyThyself()
     {
-        if (GetComponent<PhotonView>())
-        {
-            PhotonNetwork.Destroy(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        
     }
 }
