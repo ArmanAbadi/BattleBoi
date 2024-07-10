@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Fusion;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
     public static PlayerController Instance { get; private set; }
     private void Awake()
@@ -39,7 +40,8 @@ public class PlayerController : MonoBehaviour
     float AttackCoolDownMarker = 0f;
     public Sword sword;
     bool FreezePlayer = false;
-    // Start is called before the first frame update
+    NetworkInputData data;
+
     void Start()
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
@@ -49,8 +51,10 @@ public class PlayerController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public override void FixedUpdateNetwork()
     {
+        GetInput(out data);
+        
         if (FreezePlayer)
         {
             Freeze();
@@ -66,11 +70,8 @@ public class PlayerController : MonoBehaviour
     }
     void UpdateDirection()
     {
-        Direction = Vector3.zero;
-        if (Input.GetKey(KeyCode.A)) Direction += Vector3.left;
-        if (Input.GetKey(KeyCode.D)) Direction += Vector3.right;
-        if (Input.GetKey(KeyCode.W)) Direction += Vector3.up;
-        if (Input.GetKey(KeyCode.S)) Direction += Vector3.down;
+        data.direction.Normalize();
+        Direction = data.direction;
 
         //if (Direction != Vector3.zero) transform.rotation = Quaternion.LookRotation(Vector3.forward, -Direction);
         if (Direction == Vector3.zero)
@@ -90,7 +91,7 @@ public class PlayerController : MonoBehaviour
     }
     void Attack()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (data.SlashAttack)
         {
             if ( Time.time > AttackCoolDownMarker + AttackCooldown)
             {
