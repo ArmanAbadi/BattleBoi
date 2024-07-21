@@ -97,6 +97,8 @@ public class MapGen : MonoBehaviour
     }
     private void Update()
     {
+        if (PlayerController.Instance == null) return;
+
         if((PlayerController.Instance.transform.position-tilemap.transform.parent.position).magnitude > ChunkSize / 4)
         {
             GenerateTiles((int)PlayerController.Instance.transform.position.x, (int)PlayerController.Instance.transform.position.y);

@@ -5,11 +5,17 @@ using Fusion.Sockets;
 using System.Collections.Generic;
 using System;
 
-public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
+public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 {
+    public static NetworkManager Instance;
+    public bool IsConnected = false;
+
+    public GameObject SpawnerPrefab;
 
     private void Awake()
     {
+        if (Instance == null) Instance = this;
+        
         DontDestroyOnLoad(this.gameObject);
     }
     public void OnConnectedToServer(NetworkRunner runner)
@@ -24,7 +30,8 @@ public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
     {
-        throw new NotImplementedException();
+        request.Accept();
+        //throw new NotImplementedException();
     }
 
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data)
@@ -46,8 +53,8 @@ public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         var data = new NetworkInputData();
 
-        if (Input.GetKey(KeyCode.Space))
-            data.SlashAttack = true;
+        data.direction = Vector3.zero;
+        data.SlashAttack = Input.GetKey(KeyCode.Space);
 
         if (Input.GetKey(KeyCode.W))
             data.direction += Vector3.up;
@@ -84,12 +91,14 @@ public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
+        IsConnected = true;
         if (runner.IsServer)
         {
             // Create a unique position for the player
             Vector3 spawnPosition = new Vector3((player.RawEncoded % runner.Config.Simulation.PlayerCount) * 3, 1, 0);
             NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
-            // Keep track of the player avatars for easy access
+            runner.Spawn(SpawnerPrefab, spawnPosition, Quaternion.identity, player);
+            
             _spawnedCharacters.Add(player, networkPlayerObject);
         }
     }
@@ -138,7 +147,7 @@ public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
         throw new NotImplementedException();
     }
 
-    private NetworkRunner _runner;
+    public NetworkRunner _runner;
 
     async void StartGame(GameMode mode)
     {
@@ -159,15 +168,12 @@ public class GameManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             GameMode = mode,
             SessionName = "TestRoom",
-            Scene = scene
+            Scene = scene,
+            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
         });
     }
     public void StartGameHost()
     {
-        StartGame(GameMode.Host);
-    }
-    public void StartGameClient()
-    {
-        StartGame(GameMode.Client);
+        StartGame(GameMode.AutoHostOrClient);
     }
 }

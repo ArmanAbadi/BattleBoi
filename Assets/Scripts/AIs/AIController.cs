@@ -1,17 +1,18 @@
+using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AIController : MonoBehaviour
+public class AIController : NetworkBehaviour
 {
     public int MaxHealth = 100;
-    public int CurrentHealth;
+    [Networked] public int CurrentHealth { get; set; }
     public float MovementUpdateTime = 1f;
-    protected Vector3 Direction = Vector2.zero;
+    [Networked] protected Vector3 Direction { get; set; } = Vector3.zero;
     public float Speed = 2f;
     protected Rigidbody2D rigidbody2D;
     protected Animator animator;
-    public bool IsDead = false;
+    [Networked] public bool IsDead { get; set; } = false;
     public float AggroRange = 4f;
 
     public float AttackCooldown = 1f;

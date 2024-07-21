@@ -2,23 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using Fusion.Addons.Physics;
+using System;
 
 public class PlayerController : NetworkBehaviour
 {
-    public static PlayerController Instance { get; private set; }
-    private void Awake()
-    {
-        // If there is an instance, and it's not me, delete myself.
+    public static PlayerController Instance;
 
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-        }
-    }
+    public SpawnParameter[] SpawnParameters;
+
     [SerializeField]
     int MaxHealth = 100;
     int currentHealth;
@@ -32,8 +26,8 @@ public class PlayerController : NetworkBehaviour
             if(HealthBarController.Instance != null) HealthBarController.Instance.UpdateHealthBar((float)currentHealth / MaxHealth);
         }
     }
-    Vector3 Direction = Vector2.zero;
-    public float Speed = 2f;
+    [SerializeField]
+    float MaxSpeed = 2.5f;
     Rigidbody2D rigidbody2D;
     Animator animator;
     public float AttackCooldown = 0.5f;
@@ -42,19 +36,54 @@ public class PlayerController : NetworkBehaviour
     bool FreezePlayer = false;
     NetworkInputData data;
 
-    void Start()
+    [Networked]
+    bool Slash
     {
-        rigidbody2D = GetComponent<Rigidbody2D>();
-        animator = GetComponentInChildren<Animator>();
-        CurrentHealth = MaxHealth;
-        MapGen.Instance.GenerateTiles((int)PlayerController.Instance.transform.position.x, (int)PlayerController.Instance.transform.position.y);
+        get;
+        set;
+    }
+    [Networked]
+    Vector2 Direction
+    {
+        get;
+        set;
+    }
+    [Networked]
+    Vector3 Position
+    {
+        get;
+        set;
     }
 
+    public override void Spawned()
+    {
+        if(NetworkManager.Instance._runner.LocalPlayer == GetComponent<NetworkObject>().InputAuthority)
+        {
+            Instance = this;
+        }
+        animator = GetComponentInChildren<Animator>(); 
+        rigidbody2D = GetComponent<Rigidbody2D>();
+        CurrentHealth = MaxHealth;
+    }
+
+    void Start()
+    {
+        //rigidbody2D = GetComponent<Rigidbody2D>();
+        MapGen.Instance.GenerateTiles((int)PlayerController.Instance.transform.position.x, (int)PlayerController.Instance.transform.position.y);
+        SpawnManager.Instance.AddPlayer(this);
+    }
     // Update is called once per frame
     public override void FixedUpdateNetwork()
     {
-        GetInput(out data);
-        
+        if (!HasStateAuthority) return;
+
+        if (!GetInput(out data)) return;
+
+        Slash = data.SlashAttack;
+        data.direction.Normalize();
+        Direction = data.direction;
+        Position = transform.position;
+
         if (FreezePlayer)
         {
             Freeze();
@@ -66,32 +95,30 @@ public class PlayerController : NetworkBehaviour
     }
     void Freeze()
     {
-        rigidbody2D.velocity = Vector3.zero;
+        //rigidbody2D.velocity = Vector3.zero;
     }
     void UpdateDirection()
     {
-        data.direction.Normalize();
-        Direction = data.direction;
-
         //if (Direction != Vector3.zero) transform.rotation = Quaternion.LookRotation(Vector3.forward, -Direction);
-        if (Direction == Vector3.zero)
+        if (Direction == Vector2.zero)
         {
             animator.SetBool(GlobalConstants.Idle, true);
         }
         else
         {
             animator.SetBool(GlobalConstants.Idle, false);
-            animator.SetFloat(GlobalConstants.HorizontalVelocity, Direction.x);
-            animator.SetFloat(GlobalConstants.VerticalVelocity, Direction.y);
+            animator.SetFloat(GlobalConstants.HorizontalVelocity, Math.Sign(Direction.x));
+            animator.SetFloat(GlobalConstants.VerticalVelocity, Math.Sign(Direction.y));
         }
     }
     void UpdateMovement()
     {
-        rigidbody2D.velocity = Speed * Direction.normalized;
+        rigidbody2D.velocity = MaxSpeed * Direction.normalized;
+        //_cc.Move(Speed * data.direction);
     }
     void Attack()
     {
-        if (data.SlashAttack)
+        if (Slash)
         {
             if ( Time.time > AttackCoolDownMarker + AttackCooldown)
             {
@@ -121,5 +148,24 @@ public class PlayerController : NetworkBehaviour
     public bool IsFullHealth()
     {
         return currentHealth == MaxHealth;
+    }
+    private void OnDestroy()
+    {
+        SpawnManager.Instance.RemovePlayer(this);
+    }
+
+    public void FixedUpdate()
+    {
+        if (HasStateAuthority) return;
+
+        if (FreezePlayer)
+        {
+            Freeze();
+            return;
+        }
+        UpdateDirection();
+        UpdateMovement();
+        Attack();
+        transform.position = Position;
     }
 }

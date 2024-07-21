@@ -1,3 +1,4 @@
+using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,7 +6,7 @@ using UnityEngine;
 public class PigController : AIController
 {
     public float AggroAlliesRange = 10f;
-    bool aggrod = false;
+    [Networked] bool aggrod { get; set; } = false;
     protected bool Aggrod
     {
         get { return aggrod; }

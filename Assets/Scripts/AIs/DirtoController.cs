@@ -1,3 +1,4 @@
+using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,8 +7,8 @@ public class DirtoController : AIController
 {
     public float AttackRange = 2f;
     public int Damage = 10;
-    bool Freeze = false;
-    bool Unrooted = false;
+    [Networked] bool Freeze { get; set; } = false;
+    [Networked] bool Unrooted { get; set; } = false;
     public GameObject DirtProjectilePrefab;
 
     public float BulletSpeed;
