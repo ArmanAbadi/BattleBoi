@@ -9,50 +9,67 @@ public class PigController : AIController
     [Networked] bool aggrod { get; set; } = false;
     protected bool Aggrod
     {
-        get { return aggrod; }
+        get {
+            return aggrod; 
+        }
         set {
             aggrod = value;
-            animator.SetBool(GlobalConstants.Aggro, aggrod);
         }
     }
     public float AggroSpeed = 5f;
     public int Damage = 10;
     protected void Start()
     {
-        base.Start();
         MonsterManager.AddPig(this);
     }
-    protected override IEnumerator MovementUpdate()
+    public override void Spawned()
     {
-        while (!IsDead)
-        {
-            UpdateDirection();
-            UpdateMovement();
-
-            yield return new WaitForSeconds(Aggrod? 0:MovementUpdateTime);
-        }
+        base.Spawned();
+        animator.SetBool(GlobalConstants.Aggro, aggrod);
     }
     protected override void UpdateDirection()
     {
-        Direction = Vector3.zero;
         if (Aggrod)
         {
             BasicFollow();
         }
         else
         {
-            RandomWalk();
+            if (Time.time - MovementUpdateTimeMarker > MovementUpdateTime)
+            {
+                MovementUpdateTimeMarker = Time.time;
+                RandomWalk();
+            }
         }
-        if (Direction.x > 0) { animator.SetFloat(GlobalConstants.HorizontalVelocity, 1); }
-        if (Direction.x < 0) { animator.SetFloat(GlobalConstants.HorizontalVelocity, -1); }
     }
     protected override void UpdateMovement()
     {
         rigidbody2D.velocity = Random.Range(0f, Aggrod? AggroSpeed:Speed) * Direction.normalized;
     }
+    protected override void PropertiesChanged()
+    {
+        foreach (var change in _changeDetector.DetectChanges(this))
+        {
+            switch (change)
+            {
+                case nameof(CurrentHealth):
+                    if (CurrentHealth <= 0)
+                    {
+                        CurrentHealth = 0;
+                        Death();
+                    }
+                    break;
+                case nameof(aggrod):
+                    animator.SetBool(GlobalConstants.Aggro, aggrod);
+                    break;
+            }
+        }
+    }
     public override void TakeDmg(int dmg)
     {
+        if (!HasStateAuthority) return;
         if (IsDead) return;
+
         Aggrod = true;
         AggroAllies();
         CurrentHealth -= dmg;
@@ -72,10 +89,6 @@ public class PigController : AIController
             }
         }
     }
-    protected override void BasicFollow()
-    {
-        Direction += (PlayerController.Instance.transform.position - transform.position).normalized;
-    }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         Attack(collision);
@@ -90,8 +103,6 @@ public class PigController : AIController
         {
             if (Time.time > AttackCoolDownMarker + AttackCooldown)
             {
-
-                Debug.Log("pig atk");
                 PlayerController.Instance.TakeDamage(Damage);
                 AttackCoolDownMarker = Time.time;
             }

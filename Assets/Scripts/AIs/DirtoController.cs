@@ -13,17 +13,15 @@ public class DirtoController : AIController
 
     public float BulletSpeed;
     public Transform ProjectileSpawnLocation;
-    protected override IEnumerator MovementUpdate()
+    protected override void UpdateDirection()
     {
-        while (!IsDead)
-        {
+        
             Direction = Vector3.zero;
 
             if (Freeze)
             {
                 rigidbody2D.velocity = Random.Range(0f, Speed) * Direction.normalized;
-                yield return null;
-                continue;
+                return;
             }
 
             if (PlayerDistance() > AggroRange)
@@ -40,8 +38,7 @@ public class DirtoController : AIController
                 AttackCoolDownMarker = Time.time;
                 Freeze = true;
 
-                yield return null;
-                continue;
+                return;
             }
             else
             {
@@ -61,28 +58,9 @@ public class DirtoController : AIController
                     Direction = BasicFleeDirection();
                 }
             }
-            if (Direction.x > 0f)
-            {
-                animator.SetFloat(GlobalConstants.HorizontalVelocity, 1);
-            }
-            else if(Direction.x < 0f)
-            {
-                animator.SetFloat(GlobalConstants.HorizontalVelocity, -1);
-            }
-            rigidbody2D.velocity = Random.Range(0f, Speed) * Direction.normalized;
-            yield return null;
-        }
+        
     }
-    public override void TakeDmg(int dmg)
-    {
-        if (IsDead) return;
-        CurrentHealth -= dmg;
-        if (CurrentHealth <= 0)
-        {
-            CurrentHealth = 0;
-            Death();
-        }
-    }
+
     protected override void Death()
     {
         if (projectile != null && projectile.GetComponent<Rigidbody2D>().velocity.magnitude == 0) Destroy(projectile.gameObject);

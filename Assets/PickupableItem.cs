@@ -1,9 +1,10 @@
+using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static GlobalConstants;
 
-public class PickupableItem : MonoBehaviour
+public class PickupableItem : NetworkBehaviour
 {
     public Resource resource;
     public void Start()
@@ -15,6 +16,7 @@ public class PickupableItem : MonoBehaviour
         if (collision.CompareTag(GlobalConstants.Tags.Player.ToString()))
         {
             PlayerInventory.AddItem(resource);
+            Runner.Despawn(Object);
         }
     }
 }

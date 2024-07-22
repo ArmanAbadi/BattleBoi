@@ -1,4 +1,5 @@
 using Fusion;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +9,7 @@ public class AIController : NetworkBehaviour
     public int MaxHealth = 100;
     [Networked] public int CurrentHealth { get; set; }
     public float MovementUpdateTime = 1f;
-    [Networked] protected Vector3 Direction { get; set; } = Vector3.zero;
+    protected float MovementUpdateTimeMarker;
     public float Speed = 2f;
     protected Rigidbody2D rigidbody2D;
     protected Animator animator;
@@ -19,31 +20,81 @@ public class AIController : NetworkBehaviour
     protected float AttackCoolDownMarker = 0f;
 
     public List<GameObject> DropablePrefabs;
+
+    protected ChangeDetector _changeDetector;
+
+
+    [Networked]
+    protected Vector3 Direction
+    {
+        get;
+        set;
+    }
+    [Networked]
+    protected Vector3 Position
+    {
+        get;
+        set;
+    }
+
     // Start is called before the first frame update
-    protected void Start()
+    public override void Spawned()
     {
         CurrentHealth = MaxHealth;
         rigidbody2D = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
-
-        StartCoroutine(MovementUpdate());
+        MovementUpdateTimeMarker = Time.time;
+        _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
     }
-
-    // Update is called once per frame
-    protected virtual IEnumerator MovementUpdate()
+    public override void FixedUpdateNetwork()
     {
-        while (!IsDead)
-        {
-            UpdateDirection();
-            UpdateMovement();
+        if (!HasStateAuthority) return;
+        if (IsDead) return;
 
-            yield return new WaitForSeconds(MovementUpdateTime);
+        Position = transform.position;
+
+        UpdateDirection();
+        UpdateAnimation();
+        UpdateMovement();
+    }
+    private void FixedUpdate()
+    {
+        PropertiesChanged();
+
+        if (HasStateAuthority) return;
+        if (IsDead) return;
+
+        UpdateAnimation();
+        UpdateMovement();
+
+        if ((Position - transform.position).magnitude != 0)
+        {
+            transform.position = Vector3.Lerp(Position, transform.position, Time.fixedDeltaTime * 2f / ((Position - transform.position).magnitude));
+        }
+    }
+    protected virtual void PropertiesChanged()
+    {
+        foreach (var change in _changeDetector.DetectChanges(this))
+        {
+            switch (change)
+            {
+                case nameof(CurrentHealth):
+                    if (CurrentHealth <= 0)
+                    {
+                        CurrentHealth = 0;
+                        Death();
+                    }
+                    break;
+            }
         }
     }
     protected virtual void UpdateDirection()
     {
-        Direction = new Vector3(Random.Range(-1,2), Random.Range(-1,2),0);
-        animator.SetFloat(GlobalConstants.HorizontalVelocity, Direction.x);
+        //animator.SetFloat(GlobalConstants.HorizontalVelocity, Math.Sign(Direction.x));
+    }
+    protected virtual void UpdateAnimation()
+    {
+        animator.SetFloat(GlobalConstants.HorizontalVelocity, Math.Sign(Direction.x));
     }
     protected virtual void UpdateMovement()
     {
@@ -52,22 +103,48 @@ public class AIController : NetworkBehaviour
     }
     protected virtual void BasicFollow()
     {
-        if ((PlayerController.Instance.transform.position - transform.position).magnitude < AggroRange)
+        PlayerController target = SpawnManager.Instance.players[0];
+        foreach (PlayerController player in SpawnManager.Instance.players)
         {
-            Direction += (PlayerController.Instance.transform.position - transform.position).normalized;
+            if ((player.transform.position - transform.position).magnitude < (target.transform.position - transform.position).magnitude)
+            {
+                target = player;
+            }
+        }
+        if ((target.transform.position - transform.position).magnitude < AggroRange)
+        {
+            Direction = (target.transform.position - transform.position).normalized;
         }
     }
     protected virtual Vector3 BasicFollowDirection()
     {
-            return (PlayerController.Instance.transform.position - transform.position).normalized;
+        PlayerController target = SpawnManager.Instance.players[0];
+        foreach (PlayerController player in SpawnManager.Instance.players)
+        {
+            if ((player.transform.position - transform.position).magnitude < (target.transform.position - transform.position).magnitude)
+            {
+                target = player;
+            }
+        }
+        
+        return (target.transform.position - transform.position).normalized;
     }
     protected virtual Vector3 BasicFleeDirection()
     {
-        return -(PlayerController.Instance.transform.position - transform.position).normalized;
+        PlayerController target = SpawnManager.Instance.players[0];
+        foreach (PlayerController player in SpawnManager.Instance.players)
+        {
+            if ((player.transform.position - transform.position).magnitude < (target.transform.position - transform.position).magnitude)
+            {
+                target = player;
+            }
+        }
+
+        return -(target.transform.position - transform.position).normalized;
     }
     protected void RandomWalk()
     {
-        Direction = new Vector3(Random.Range(-1f, 2f), Random.Range(-1f, 2f), 0);
+        Direction = new Vector3(UnityEngine.Random.Range(-1f, 2f), UnityEngine.Random.Range(-1f, 2f), 0);
     }
     protected virtual void Attack()
     {
@@ -75,19 +152,24 @@ public class AIController : NetworkBehaviour
     protected virtual void Death()
     {
         rigidbody2D.velocity = Vector2.zero;
+        rigidbody2D.constraints = RigidbodyConstraints2D.FreezeAll;
         IsDead = true;
         animator.SetTrigger(GlobalConstants.DeadTrigger);
         GetComponent<BoxCollider2D>().isTrigger = true;
     }
     public void SpawnDropables()
     {
+        if (!HasStateAuthority) return;
+        
         foreach (GameObject dropable in DropablePrefabs)
         {
-            //PhotonNetwork.Instantiate(dropable.name, transform.position, Quaternion.identity);
+            Runner.Spawn(dropable, transform.position, Quaternion.identity);
         }
     }
     public virtual void TakeDmg(int dmg)
     {
+        if (!HasStateAuthority) return;
+
         if (IsDead) return;
 
         CurrentHealth -= dmg;
@@ -99,6 +181,6 @@ public class AIController : NetworkBehaviour
     }
     public void DestroyThyself()
     {
-        
+        Runner.Despawn(Object);
     }
 }

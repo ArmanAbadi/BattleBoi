@@ -4,16 +4,6 @@ using UnityEngine;
 
 public class SwarmAI : AIController
 {
-    protected override IEnumerator MovementUpdate()
-    {
-        while (!IsDead)
-        {
-            UpdateDirection();
-            UpdateMovement();
-
-            yield return new WaitForSeconds(0);
-        }
-    }
     protected override void UpdateDirection()
     {
         Direction = Vector3.zero;

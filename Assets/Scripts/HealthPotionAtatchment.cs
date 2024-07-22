@@ -1,9 +1,10 @@
+using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static GlobalConstants;
 
-public class HealthPotionAtatchment: MonoBehaviour
+public class HealthPotionAtatchment: NetworkBehaviour
 {
     public HealthPotion healthPotion;
 
@@ -15,7 +16,8 @@ public class HealthPotionAtatchment: MonoBehaviour
     {
         if (collision.CompareTag(GlobalConstants.Tags.Player.ToString()))
         {
-            PlayerInventory.AddItem(healthPotion);
+            PlayerInventory.AddItem(healthPotion); 
+            Runner.Despawn(Object);
         }
     }
 }

@@ -20,10 +20,8 @@ public class TreeManController : AIController
     public GameObject TreeSpawnpointRight;
 
     public float ShootDelayTime = 1f;
-    protected override IEnumerator MovementUpdate()
+    protected override void UpdateDirection()
     {
-        while (!IsDead)
-        {
             Direction = Vector3.zero;
 
             if (PlayerDistance() > DeAggroRange)
@@ -34,34 +32,17 @@ public class TreeManController : AIController
             {
                 AttackCoolDownMarker = Time.time;
                 SpawnProjectile();
-                yield return null;
-                continue;
+                return;
             }
             else if(PlayerDistance() < AggroRange)
             {
                 animator.SetBool(GlobalConstants.Aggro, true);
                 Direction = BasicFollowDirection();
             }
-            if (Direction.x > 0f)
-            {
-                animator.SetFloat(GlobalConstants.HorizontalVelocity, 1);
-            }
-            else if (Direction.x < 0f)
-            {
-                animator.SetFloat(GlobalConstants.HorizontalVelocity, -1);
-            }
-            yield return null;
-        }
     }
-    public override void TakeDmg(int dmg)
+    protected override void UpdateMovement()
     {
-        if (IsDead) return;
-        CurrentHealth -= dmg;
-        if (CurrentHealth <= 0)
-        {
-            CurrentHealth = 0;
-            Death();
-        }
+
     }
     protected override void Death()
     {

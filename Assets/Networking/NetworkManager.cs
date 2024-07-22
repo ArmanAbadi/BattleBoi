@@ -4,6 +4,7 @@ using Fusion;
 using Fusion.Sockets;
 using System.Collections.Generic;
 using System;
+using Fusion.Photon.Realtime;
 
 public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -67,6 +68,15 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (Input.GetKey(KeyCode.D))
             data.direction += Vector3.right;
+
+        if (MobileInputController.Instance != null)
+        {
+            if (MobileInputController.Instance.Direction().magnitude != 0)
+            {
+                data.direction = MobileInputController.Instance.Direction();
+            }
+            data.SlashAttack = data.SlashAttack || MobileInputController.Instance.SlashPressed;
+        }
 
         input.Set(data);
     }
@@ -151,6 +161,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     async void StartGame(GameMode mode)
     {
+        var appSettings = BuildCustomAppSetting("usw");
         // Create the Fusion runner and let it know that we will be providing user input
         _runner = gameObject.AddComponent<NetworkRunner>();
         _runner.ProvideInput = true;
@@ -169,8 +180,33 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
             GameMode = mode,
             SessionName = "TestRoom",
             Scene = scene,
-            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
+            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>(),
+            CustomPhotonAppSettings = appSettings
         });
+    }
+    private FusionAppSettings BuildCustomAppSetting(string region, string customAppID = null, string appVersion = "1.0.0")
+    {
+
+        var appSettings = PhotonAppSettings.Global.AppSettings.GetCopy(); ;
+
+        appSettings.UseNameServer = true;
+        appSettings.AppVersion = appVersion;
+
+        if (string.IsNullOrEmpty(customAppID) == false)
+        {
+            appSettings.AppIdFusion = customAppID;
+        }
+
+        if (string.IsNullOrEmpty(region) == false)
+        {
+            appSettings.FixedRegion = region.ToLower();
+        }
+
+        // If the Region is set to China (CN),
+        // the Name Server will be automatically changed to the right one
+        // appSettings.Server = "ns.photonengine.cn";
+
+        return appSettings;
     }
     public void StartGameHost()
     {

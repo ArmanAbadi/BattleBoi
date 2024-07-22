@@ -2,16 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using Fusion.Addons.Physics;
 using System;
+using TMPro;
 
 public class PlayerController : NetworkBehaviour
 {
     public static PlayerController Instance;
 
     public SpawnParameter[] SpawnParameters;
+
+    public GameObject PlayerUI;
+    public HealthBarController HealthBarController;
+    public TextMeshProUGUI DistanceText;
 
     [SerializeField]
     int MaxHealth = 100;
@@ -23,7 +25,11 @@ public class PlayerController : NetworkBehaviour
             currentHealth = value;
             if (currentHealth < 0) currentHealth = 0;
             if (currentHealth > MaxHealth) currentHealth = MaxHealth;
-            if(HealthBarController.Instance != null) HealthBarController.Instance.UpdateHealthBar((float)currentHealth / MaxHealth);
+
+            if (HasInputAuthority)
+            {
+                HealthBarController.UpdateHealthBar((float)currentHealth / MaxHealth);
+            }
         }
     }
     [SerializeField]
@@ -68,8 +74,8 @@ public class PlayerController : NetworkBehaviour
 
     void Start()
     {
-        //rigidbody2D = GetComponent<Rigidbody2D>();
         MapGen.Instance.GenerateTiles((int)PlayerController.Instance.transform.position.x, (int)PlayerController.Instance.transform.position.y);
+        PlayerUI.SetActive(HasInputAuthority);
         SpawnManager.Instance.AddPlayer(this);
     }
     // Update is called once per frame
@@ -107,8 +113,8 @@ public class PlayerController : NetworkBehaviour
         else
         {
             animator.SetBool(GlobalConstants.Idle, false);
-            animator.SetFloat(GlobalConstants.HorizontalVelocity, Math.Sign(Direction.x));
-            animator.SetFloat(GlobalConstants.VerticalVelocity, Math.Sign(Direction.y));
+            animator.SetFloat(GlobalConstants.HorizontalVelocity, Direction.x);
+            animator.SetFloat(GlobalConstants.VerticalVelocity, Direction.y);
         }
     }
     void UpdateMovement()
@@ -122,11 +128,16 @@ public class PlayerController : NetworkBehaviour
         {
             if ( Time.time > AttackCoolDownMarker + AttackCooldown)
             {
-                if(animator.GetFloat(GlobalConstants.VerticalVelocity) == -1) { animator.Play(GlobalConstants.HumanAttackDown); }
-                else if(animator.GetFloat(GlobalConstants.HorizontalVelocity) == -1) { animator.Play(GlobalConstants.HumanAttackLeft); }
-                else if(animator.GetFloat(GlobalConstants.HorizontalVelocity) == 1) { animator.Play(GlobalConstants.HumanAttackRight); }
-                else if (animator.GetFloat(GlobalConstants.VerticalVelocity) == 1) { animator.Play(GlobalConstants.HumanAttackUp); }
-                else { animator.Play(GlobalConstants.HumanAttackDown); }
+                if(Mathf.Abs(animator.GetFloat(GlobalConstants.VerticalVelocity)) < Mathf.Abs(animator.GetFloat(GlobalConstants.HorizontalVelocity))){
+                    if(Mathf.Sign(animator.GetFloat(GlobalConstants.HorizontalVelocity)) == 1) animator.Play(GlobalConstants.HumanAttackRight);
+                    else animator.Play(GlobalConstants.HumanAttackLeft);
+                }
+                else
+                {
+                    if (Mathf.Sign(animator.GetFloat(GlobalConstants.VerticalVelocity)) == 1) animator.Play(GlobalConstants.HumanAttackUp);
+                    else animator.Play(GlobalConstants.HumanAttackDown);
+                }
+
                 sword.Attack();
                 AttackCoolDownMarker = Time.time;
                 FreezePlayer = true;
@@ -156,6 +167,10 @@ public class PlayerController : NetworkBehaviour
 
     public void FixedUpdate()
     {
+        if (HasInputAuthority)
+        {
+            DistanceText.text = transform.position.magnitude.ToString("F0")+ " m";
+        }
         if (HasStateAuthority) return;
 
         if (FreezePlayer)
@@ -166,6 +181,10 @@ public class PlayerController : NetworkBehaviour
         UpdateDirection();
         UpdateMovement();
         Attack();
-        transform.position = Position;
+
+        if ((Position - transform.position).magnitude != 0)
+        {
+            transform.position = Vector3.Lerp(Position, transform.position, Time.fixedDeltaTime * 2f / ((Position - transform.position).magnitude));
+        }
     }
 }
