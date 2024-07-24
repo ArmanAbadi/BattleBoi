@@ -23,6 +23,8 @@ public class AIController : NetworkBehaviour
 
     protected ChangeDetector _changeDetector;
 
+    public SpawnParameter spawnParameter;
+
 
     [Networked]
     protected Vector3 Direction
@@ -181,6 +183,7 @@ public class AIController : NetworkBehaviour
     }
     public void DestroyThyself()
     {
+        spawnParameter.CurrentAmount--;
         Runner.Despawn(Object);
     }
 }
