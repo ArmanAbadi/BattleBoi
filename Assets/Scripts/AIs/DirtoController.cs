@@ -1,4 +1,5 @@
 using Fusion;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,60 +8,63 @@ public class DirtoController : AIController
 {
     public float AttackRange = 2f;
     public int Damage = 10;
-    [Networked] bool Freeze { get; set; } = false;
-    [Networked] bool Unrooted { get; set; } = false;
+    bool Freeze = false;
+    bool Unrooted = false;
     public GameObject DirtProjectilePrefab;
 
     public float BulletSpeed;
     public Transform ProjectileSpawnLocation;
     protected override void UpdateDirection()
     {
-        
-            Direction = Vector3.zero;
+        Direction = Vector3.zero;
 
-            if (Freeze)
+        if (Freeze)
+        {
+            rigidbody2D.velocity = UnityEngine.Random.Range(0f, Speed) * Direction.normalized;
+            return;
+        }
+        if (PlayerDistance() > AggroRange)
+        {
+            if (Unrooted)
             {
-                rigidbody2D.velocity = Random.Range(0f, Speed) * Direction.normalized;
-                return;
+                animator.SetFloat(GlobalConstants.HorizontalVelocity, 0);
+                Unrooted = false;
+                animator.SetTrigger(GlobalConstants.DigDown);
             }
+        }
+        else if (PlayerDistance() < AttackRange && ReadyToAttack() && Unrooted)
+        {
+            animator.SetTrigger(GlobalConstants.Attack);
+            AttackCoolDownMarker = Time.time;
+            Freeze = true;
 
-            if (PlayerDistance() > AggroRange)
+            return;
+        }
+        else
+        {
+            if (!Unrooted)
             {
-                if (Unrooted)
-                {
-                    Unrooted = false;
-                    animator.SetTrigger(GlobalConstants.DigDown);
-                }
-            }
-            else if (PlayerDistance() < AttackRange && ReadyToAttack() && Unrooted)
-            {
-                animator.SetTrigger(GlobalConstants.Attack);
-                AttackCoolDownMarker = Time.time;
+                animator.SetTrigger(GlobalConstants.DigUp);
+                Unrooted = true;
                 Freeze = true;
-
-                return;
+            }
+                
+            if (ReadyToAttack())
+            {
+                Direction = BasicFollowDirection();
             }
             else
             {
-                if (!Unrooted)
-                {
-                    animator.SetTrigger(GlobalConstants.DigUp);
-                    Unrooted = true;
-                    Freeze = true;
-                }
-                
-                if (ReadyToAttack())
-                {
-                    Direction = BasicFollowDirection();
-                }
-                else
-                {
-                    Direction = BasicFleeDirection();
-                }
+                Direction = BasicFleeDirection();
             }
+        }
         
     }
-
+    protected override void UpdateAnimation()
+    {
+        if (Math.Sign(Direction.x) == 0) return;
+        animator.SetFloat(GlobalConstants.HorizontalVelocity, Math.Sign(Direction.x));
+    }
     protected override void Death()
     {
         if (projectile != null && projectile.GetComponent<Rigidbody2D>().velocity.magnitude == 0) Destroy(projectile.gameObject);
@@ -75,7 +79,15 @@ public class DirtoController : AIController
     }
     float PlayerDistance()
     {
-        return (PlayerController.Instance.transform.position - transform.position).magnitude;
+        PlayerController target = SpawnManager.Instance.players[0];
+        foreach (PlayerController player in SpawnManager.Instance.players)
+        {
+            if ((player.transform.position - transform.position).magnitude < (target.transform.position - transform.position).magnitude)
+            {
+                target = player;
+            }
+        }
+        return (target.transform.position - transform.position).magnitude;
     }
     public void Unfreeze()
     {

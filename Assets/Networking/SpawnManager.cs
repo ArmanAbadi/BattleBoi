@@ -41,7 +41,7 @@ public class SpawnManager : NetworkBehaviour
 	}
 	public void RemovePlayer(PlayerController player)
 	{
-		players.Remove(player);
+		//players.Remove(player);
 	}
 
 	[Networked] private TickTimer delay { get; set; }
@@ -75,7 +75,7 @@ public class SpawnManager : NetworkBehaviour
 							spawnDir.Normalize();
 
 							// and now use it in your computation for line 42 above!
-							Runner.Spawn(spawnParameter.Prefab, transform.position + spawnDir * spawnParameter.SpawnRadius, Quaternion.identity, inputAuthority: null, (Runner, NO) => SetSpawnParameter(Runner, NO, spawnParameter));
+							Runner.Spawn(spawnParameter.Prefab, spawnerForPlayer.PlayerController.transform.position + spawnDir * spawnParameter.SpawnRadius, Quaternion.identity, inputAuthority: null, (Runner, NO) => SetSpawnParameter(Runner, NO, spawnParameter));
 							spawnParameter.CurrentAmount++;
 						}
 						break;

@@ -17,7 +17,8 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField]
     int MaxHealth = 100;
-    int currentHealth;
+    [Networked]
+    public int currentHealth { get; set; }
     public int CurrentHealth
     {
         get { return currentHealth; }
@@ -60,7 +61,10 @@ public class PlayerController : NetworkBehaviour
         get;
         set;
     }
+    [Networked]
+    bool IsDead { get; set; }
 
+    protected ChangeDetector _changeDetector;
     public override void Spawned()
     {
         if(NetworkManager.Instance._runner.LocalPlayer == GetComponent<NetworkObject>().InputAuthority)
@@ -69,9 +73,27 @@ public class PlayerController : NetworkBehaviour
         }
         animator = GetComponentInChildren<Animator>(); 
         rigidbody2D = GetComponent<Rigidbody2D>();
-        CurrentHealth = MaxHealth;
+        if (HasStateAuthority) CurrentHealth = MaxHealth;
+        else CurrentHealth = currentHealth;
+        _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
+        PropertiesChanged();
     }
 
+    protected virtual void PropertiesChanged()
+    {
+        foreach (var change in _changeDetector.DetectChanges(this))
+        {
+            switch (change)
+            {
+                case nameof(currentHealth):
+                    CurrentHealth = currentHealth;
+                    break;
+                case nameof(IsDead):
+                    Death();
+                    break;
+            }
+        }
+    }
     void Start()
     {
         MapGen.Instance.GenerateTiles((int)PlayerController.Instance.transform.position.x, (int)PlayerController.Instance.transform.position.y);
@@ -81,6 +103,7 @@ public class PlayerController : NetworkBehaviour
     // Update is called once per frame
     public override void FixedUpdateNetwork()
     {
+        if (IsDead) return;
         if (!HasStateAuthority) return;
 
         if (!GetInput(out data)) return;
@@ -162,11 +185,12 @@ public class PlayerController : NetworkBehaviour
     }
     private void OnDestroy()
     {
-        SpawnManager.Instance.RemovePlayer(this);
+        //SpawnManager.Instance.RemovePlayer(this);
     }
 
     public void FixedUpdate()
     {
+        if (IsDead) return;
         if (HasInputAuthority)
         {
             DistanceText.text = transform.position.magnitude.ToString("F0")+ " m";
@@ -186,5 +210,13 @@ public class PlayerController : NetworkBehaviour
         {
             transform.position = Vector3.Lerp(Position, transform.position, Time.fixedDeltaTime * 2f / ((Position - transform.position).magnitude));
         }
+    }
+    protected virtual void Death()
+    {
+        rigidbody2D.velocity = Vector2.zero;
+        rigidbody2D.constraints = RigidbodyConstraints2D.FreezeAll;
+        IsDead = true;
+        animator.SetTrigger(GlobalConstants.DeadTrigger);
+        GetComponent<BoxCollider2D>().isTrigger = true;
     }
 }

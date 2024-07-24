@@ -66,6 +66,7 @@ public class AIController : NetworkBehaviour
         if (HasStateAuthority) return;
         if (IsDead) return;
 
+        UpdateDirection();
         UpdateAnimation();
         UpdateMovement();
 

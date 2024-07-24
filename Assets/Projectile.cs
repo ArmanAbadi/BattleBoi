@@ -15,7 +15,7 @@ public class Projectile : MonoBehaviour
     {
         if (collision.gameObject.CompareTag(GlobalConstants.Tags.Player.ToString()))
         {
-            PlayerController.Instance.TakeDamage(Dmg);
+            collision.gameObject.GetComponent<PlayerController>().TakeDamage(Dmg);
             Destroy(this.gameObject);
         }
     }

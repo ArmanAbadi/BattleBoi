@@ -64,7 +64,15 @@ public class TreeManController : AIController
     }
     float PlayerDistance()
     {
-        return (PlayerController.Instance.transform.position - transform.position).magnitude;
+        PlayerController target = SpawnManager.Instance.players[0];
+        foreach (PlayerController player in SpawnManager.Instance.players)
+        {
+            if ((player.transform.position - transform.position).magnitude < (target.transform.position - transform.position).magnitude)
+            {
+                target = player;
+            }
+        }
+        return (target.transform.position - transform.position).magnitude;
     }
     void SpawnProjectile()
     {
