@@ -65,13 +65,13 @@ public class PigController : AIController
             }
         }
     }
-    [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
-    public override void RPC_TakeDmg(int dmg)
+    public override void TakeDmg(int dmg)
     {
+        if (!HasStateAuthority) return;
         if (IsDead) return;
 
         Aggrod = true;
-        RPC_AggroAllies();
+        AggroAllies();
         CurrentHealth -= dmg;
         if (CurrentHealth <= 0)
         {
@@ -79,8 +79,7 @@ public class PigController : AIController
             Death();
         }
     }
-    [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
-    void RPC_AggroAllies()
+    void AggroAllies()
     {
         foreach(PigController pig in MonsterManager.Pigs)
         {

@@ -64,6 +64,7 @@ public class SpawnManager : NetworkBehaviour
 				{
 					if (spawnerForPlayer.PlayerController.transform.position.magnitude <= spawnParameter.Distance)
 					{
+						Debug.Log(spawnParameter.CurrentAmount);
 						if (spawnParameter.delay.ExpiredOrNotRunning(Runner) && spawnParameter.CurrentAmount < spawnParameter.MaxAmount)
 						{
 							spawnParameter.delay = TickTimer.CreateFromSeconds(Runner, spawnParameter.SpawnTimer);

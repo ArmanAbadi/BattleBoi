@@ -52,22 +52,22 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        /*var data = new NetworkInputData();
+        var data = new NetworkInputData();
 
-        data.direction = Vector2.zero;
+        data.direction = Vector3.zero;
         data.SlashAttack = Input.GetKey(KeyCode.Space);
 
         if (Input.GetKey(KeyCode.W))
-            data.direction += Vector2.up;
+            data.direction += Vector3.up;
 
         if (Input.GetKey(KeyCode.S))
-            data.direction += Vector2.down;
+            data.direction += Vector3.down;
 
         if (Input.GetKey(KeyCode.A))
-            data.direction += Vector2.left;
+            data.direction += Vector3.left;
 
         if (Input.GetKey(KeyCode.D))
-            data.direction += Vector2.right;
+            data.direction += Vector3.right;
 
         if (MobileInputController.Instance != null)
         {
@@ -78,7 +78,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
             data.SlashAttack = data.SlashAttack || MobileInputController.Instance.SlashPressed;
         }
 
-        input.Set(data);*/
+        input.Set(data);
     }
 
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
@@ -102,6 +102,15 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         IsConnected = true;
+        if (runner.IsServer)
+        {
+            // Create a unique position for the player
+            Vector3 spawnPosition = new Vector3((player.RawEncoded % runner.Config.Simulation.PlayerCount) * 3, 1, 0);
+            NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
+            runner.Spawn(SpawnerPrefab, spawnPosition, Quaternion.identity, player);
+            
+            _spawnedCharacters.Add(player, networkPlayerObject);
+        }
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -125,13 +134,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSceneLoadDone(NetworkRunner runner)
     {
-        // Create a unique position for the player
-        Vector3 spawnPosition = new Vector3((runner.LocalPlayer.RawEncoded % runner.Config.Simulation.PlayerCount) * 3, 1, 0);
-        NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, runner.LocalPlayer);
-        //runner.Spawn(SpawnerPrefab, spawnPosition, Quaternion.identity, player);
-        runner.Spawn(SpawnerPrefab, spawnPosition, Quaternion.identity, runner.LocalPlayer);
-
-        _spawnedCharacters.Add(runner.LocalPlayer, networkPlayerObject);
+        throw new NotImplementedException();
     }
 
     public void OnSceneLoadStart(NetworkRunner runner)
@@ -207,6 +210,6 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     }
     public void StartGameHost()
     {
-        StartGame(GameMode.Shared);
+        StartGame(GameMode.AutoHostOrClient);
     }
 }

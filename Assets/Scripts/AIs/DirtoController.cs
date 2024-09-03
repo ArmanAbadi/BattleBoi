@@ -94,24 +94,12 @@ public class DirtoController : AIController
         Freeze = false;
     }
     Projectile projectile;
-    public void SpawnProjectile()
+    void SpawnProjectile()
     {
-        RPC_SpawnProjectile();
-    }
-
-    [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
-    void RPC_SpawnProjectile()
-    {
-        if (!HasStateAuthority) return;
         projectile = Instantiate(DirtProjectilePrefab, ProjectileSpawnLocation.position, Quaternion.identity).GetComponent<Projectile>();
     }
     public void ShootProjectile()
     {
-        RPC_ShootProjectile(Damage, BasicFollowDirection(), BulletSpeed);
-    }
-    [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
-    public void RPC_ShootProjectile(int dmg, Vector2 direction, float speed)
-    {
-        projectile.Shoot(dmg, direction, speed);
+        projectile.Shoot(Damage, BasicFollowDirection(), BulletSpeed);
     }
 }

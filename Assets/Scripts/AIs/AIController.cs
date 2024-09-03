@@ -163,21 +163,16 @@ public class AIController : NetworkBehaviour
     public void SpawnDropables()
     {
         if (!HasStateAuthority) return;
-
-        RPC_SpawnDropables();
-    }
-    [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
-    public virtual void RPC_SpawnDropables()
-    {
+        
         foreach (GameObject dropable in DropablePrefabs)
         {
             Runner.Spawn(dropable, transform.position, Quaternion.identity);
         }
     }
-
-    [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
-    public virtual void RPC_TakeDmg(int dmg)
+    public virtual void TakeDmg(int dmg)
     {
+        if (!HasStateAuthority) return;
+
         if (IsDead) return;
 
         CurrentHealth -= dmg;
