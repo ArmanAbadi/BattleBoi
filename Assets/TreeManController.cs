@@ -1,3 +1,4 @@
+using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,7 +32,10 @@ public class TreeManController : AIController
             else if (PlayerDistance() < AttackRange && ReadyToAttack() && TreeAwoken)
             {
                 AttackCoolDownMarker = Time.time;
-                SpawnProjectile();
+                if (HasStateAuthority)
+                {
+                    RPC_SpawnProjectile();
+                }
                 return;
             }
             else if(PlayerDistance() < AggroRange)
@@ -74,7 +78,8 @@ public class TreeManController : AIController
         }
         return (target.transform.position - transform.position).magnitude;
     }
-    void SpawnProjectile()
+    [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
+    void RPC_SpawnProjectile()
     {
         Projectile tempProjectile = Instantiate(ProjectilePrefab, TreeSpawnpointTop.transform.position, TreeSpawnpointTop.transform.rotation, TreeSpawnpointTop.transform).GetComponent<Projectile>();
         tempProjectile.GetComponent<SpriteRenderer>().sortingOrder = 3;

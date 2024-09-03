@@ -67,10 +67,12 @@ public class PlayerController : NetworkBehaviour
     protected ChangeDetector _changeDetector;
     public override void Spawned()
     {
-        if(NetworkManager.Instance._runner.LocalPlayer == GetComponent<NetworkObject>().InputAuthority)
+        if(HasInputAuthority)
         {
             Instance = this;
+            Position = transform.position;
         }
+        transform.position = Position;
         animator = GetComponentInChildren<Animator>(); 
         rigidbody2D = GetComponent<Rigidbody2D>();
         if (HasStateAuthority) CurrentHealth = MaxHealth;
@@ -96,35 +98,20 @@ public class PlayerController : NetworkBehaviour
     }
     void Start()
     {
-        MapGen.Instance.GenerateTiles((int)PlayerController.Instance.transform.position.x, (int)PlayerController.Instance.transform.position.y);
         PlayerUI.SetActive(HasInputAuthority);
-        SpawnManager.Instance.AddPlayer(this);
-    }
-    // Update is called once per frame
-    public override void FixedUpdateNetwork()
-    {
-        if (IsDead) return;
-        if (!HasStateAuthority) return;
 
-        if (!GetInput(out data)) return;
-
-        Slash = data.SlashAttack;
-        data.direction.Normalize();
-        Direction = data.direction;
-        Position = transform.position;
-
-        if (FreezePlayer)
+        if (HasInputAuthority)
         {
-            Freeze();
-            return;
+            MapGen.Instance.GenerateTiles((int)PlayerController.Instance.transform.position.x, (int)PlayerController.Instance.transform.position.y);
+            SpawnManager.Instance.AddPlayer(this);
         }
-        UpdateDirection();
-        UpdateMovement();
-        Attack();
+
+        sword.SetOwner(this);
     }
     void Freeze()
     {
-        //rigidbody2D.velocity = Vector3.zero;
+        rigidbody2D.velocity = Vector3.zero;
+        Direction = Vector2.zero;
     }
     void UpdateDirection()
     {
@@ -151,21 +138,26 @@ public class PlayerController : NetworkBehaviour
         {
             if ( Time.time > AttackCoolDownMarker + AttackCooldown)
             {
-                if(Mathf.Abs(animator.GetFloat(GlobalConstants.VerticalVelocity)) < Mathf.Abs(animator.GetFloat(GlobalConstants.HorizontalVelocity))){
-                    if(Mathf.Sign(animator.GetFloat(GlobalConstants.HorizontalVelocity)) == 1) animator.Play(GlobalConstants.HumanAttackRight);
-                    else animator.Play(GlobalConstants.HumanAttackLeft);
-                }
-                else
-                {
-                    if (Mathf.Sign(animator.GetFloat(GlobalConstants.VerticalVelocity)) == 1) animator.Play(GlobalConstants.HumanAttackUp);
-                    else animator.Play(GlobalConstants.HumanAttackDown);
-                }
-
-                sword.Attack();
+                RPC_SwordAttack();
                 AttackCoolDownMarker = Time.time;
                 FreezePlayer = true;
             }
         }
+    }
+    [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.All)]
+    public void RPC_SwordAttack()
+    {
+        if (Mathf.Abs(animator.GetFloat(GlobalConstants.VerticalVelocity)) < Mathf.Abs(animator.GetFloat(GlobalConstants.HorizontalVelocity)))
+        {
+            if (Mathf.Sign(animator.GetFloat(GlobalConstants.HorizontalVelocity)) == 1) animator.Play(GlobalConstants.HumanAttackRight);
+            else animator.Play(GlobalConstants.HumanAttackLeft);
+        }
+        else
+        {
+            if (Mathf.Sign(animator.GetFloat(GlobalConstants.VerticalVelocity)) == 1) animator.Play(GlobalConstants.HumanAttackUp);
+            else animator.Play(GlobalConstants.HumanAttackDown);
+        }
+        sword.Attack();
     }
     public void Unfreeze()
     {
@@ -173,6 +165,7 @@ public class PlayerController : NetworkBehaviour
     }
     public void TakeDamage(int dmg)
     {
+        if (!HasInputAuthority) return;
         CurrentHealth -= dmg;
     }
     public void Heal(int heal)
@@ -187,16 +180,41 @@ public class PlayerController : NetworkBehaviour
     {
         //SpawnManager.Instance.RemovePlayer(this);
     }
-
+    public override void FixedUpdateNetwork()
+    {
+        PropertiesChanged();
+    }
     public void FixedUpdate()
     {
         if (IsDead) return;
         if (HasInputAuthority)
         {
-            DistanceText.text = transform.position.magnitude.ToString("F0")+ " m";
-        }
-        if (HasStateAuthority) return;
+            DistanceText.text = transform.position.magnitude.ToString("F0") + " m";
 
+            Direction = Vector3.zero;
+
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+                Direction += Vector2.up;
+
+            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+                Direction += Vector2.down;
+
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+                Direction += Vector2.left;
+
+            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+                Direction += Vector2.right;
+
+            if (MobileInputController.Instance != null)
+            {
+                if (MobileInputController.Instance.Direction().magnitude != 0)
+                {
+                    Direction = MobileInputController.Instance.Direction();
+                }
+                Slash = Input.GetKey(KeyCode.Space) || MobileInputController.Instance.SlashPressed;
+            }
+        }
+        
         if (FreezePlayer)
         {
             Freeze();
@@ -205,10 +223,15 @@ public class PlayerController : NetworkBehaviour
         UpdateDirection();
         UpdateMovement();
         Attack();
-
-        if ((Position - transform.position).magnitude != 0)
+        if (HasInputAuthority)
         {
-            transform.position = Vector3.Lerp(Position, transform.position, Time.fixedDeltaTime * 2f / ((Position - transform.position).magnitude));
+            Position = transform.position;
+        }
+        else{
+            if ((Position - transform.position).magnitude >= 0.1f)
+            {
+                transform.position = Vector3.Lerp(transform.position, Position, Time.fixedDeltaTime);
+            }
         }
     }
     protected virtual void Death()
