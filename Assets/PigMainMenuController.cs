@@ -47,10 +47,10 @@ public class PigMainMenuController : MonoBehaviour
     public void Clicked(Vector3 point)
     {
         GameObject temp = Instantiate(Ham, transform.position, transform.rotation);
-        temp.transform.localScale *= 10;
+        temp.transform.localScale *= 5;
 
         temp = Instantiate(HitVFXPrefab, point, Quaternion.identity);
-        temp.transform.localScale *= 10;
+        temp.transform.localScale *= 5;
         Destroy(gameObject);
     }
 }
