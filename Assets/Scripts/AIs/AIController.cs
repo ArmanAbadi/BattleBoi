@@ -147,7 +147,7 @@ public class AIController : NetworkBehaviour
     }
     protected void RandomWalk()
     {
-        Direction = new Vector3(UnityEngine.Random.Range(-1f, 2f), UnityEngine.Random.Range(-1f, 2f), 0);
+        Direction = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0);
     }
     protected virtual void Attack()
     {
