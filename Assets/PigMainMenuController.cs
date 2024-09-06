@@ -31,7 +31,6 @@ public class PigMainMenuController : MonoBehaviour
             {
                 Clicked(hit.point);
             }
-
         }
     }
     IEnumerator Move()
