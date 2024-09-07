@@ -31,7 +31,6 @@ public class PlayerBag : MonoBehaviour
     }
     public void RefreshItems()
     {
-        Debug.Log("Refresh");
         ClearItems();
         for (int i = 0; i < GlobalConstants.MaxBagSize; i++)
         {
@@ -41,6 +40,7 @@ public class PlayerBag : MonoBehaviour
                 bagItem.GetComponent<BagItem>().SetItem(PlayerInventory.Items[PlayerInventory.InventoryItems[i]]);
                 bagItem.transform.SetParent(CanvasBot.transform, true);
                 bagItem.transform.position = GridObject.transform.GetChild(i).position;
+                bagItem.transform.localScale = Vector3.one;
 
                 items.Add(bagItem);
             }

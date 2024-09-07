@@ -40,9 +40,13 @@ public class PlayerController : NetworkBehaviour
     public float AttackCooldown = 0.5f;
     float AttackCoolDownMarker = 0f;
     public Sword sword;
-    bool FreezePlayer = false;
     NetworkInputData data;
-
+    [Networked]
+    bool FreezePlayer
+    {
+        get;
+        set;
+    } = false;
     [Networked]
     bool Slash
     {
