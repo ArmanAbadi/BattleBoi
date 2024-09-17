@@ -26,10 +26,15 @@ public class PigMainMenuController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
-            if (hit)
+            RaycastHit2D[] hits = Physics2D.RaycastAll(ray.origin, ray.direction);
+
+            foreach (RaycastHit2D hit in hits)
             {
-                Clicked(hit.point);
+                if (hit.transform == transform)
+                {
+                    Clicked(hit.point);
+
+                }
             }
         }
     }
