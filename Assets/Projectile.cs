@@ -1,3 +1,4 @@
+using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,7 +14,7 @@ public class Projectile : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag(GlobalConstants.Tags.Player.ToString()))
+        if (collision.gameObject.CompareTag(GlobalConstants.Tags.Player.ToString()) && collision.gameObject.GetComponent<NetworkBehaviour>().HasInputAuthority)
         {
             collision.gameObject.GetComponent<PlayerController>().TakeDamage(Dmg);
             Destroy(this.gameObject);

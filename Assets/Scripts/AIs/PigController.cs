@@ -104,7 +104,7 @@ public class PigController : AIController
     }
     void Attack(Collision2D collision)
     {
-        if (Aggrod && collision.gameObject.CompareTag(GlobalConstants.Tags.Player.ToString()))
+        if (Aggrod && collision.gameObject.CompareTag(GlobalConstants.Tags.Player.ToString()) && collision.gameObject.GetComponent<NetworkBehaviour>().HasInputAuthority)
         {
             if (Time.time > AttackCoolDownMarker + AttackCooldown)
             {
