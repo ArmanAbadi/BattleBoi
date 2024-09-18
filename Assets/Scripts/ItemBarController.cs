@@ -30,12 +30,12 @@ public class ItemBarController : MonoBehaviour
     public void RefreshItems()
     {
         ClearItems();
-        for (int i = 0; i < GlobalConstants.MaxBagSize; i++)
+        foreach(var Item in ItemManager.Instance.PlayerItems)
         {
-            if (PlayerInventory.InventoryItems[i] != ItemName.none && PlayerInventory.Items[PlayerInventory.InventoryItems[i]].itemType == ItemType.Consumable)
+            if (Item.Quantity >= 1 && Item.itemType == ItemType.Consumable)
             {
                 GameObject itemButton = Instantiate(ItemButtonPrefab, transform);
-                itemButton.GetComponent<ItemButton>().SetItemButton(PlayerInventory.Items[PlayerInventory.InventoryItems[i]]);
+                itemButton.GetComponent<ItemButton>().SetItemButton(Item);
                 items.Add(itemButton);
             }
         }

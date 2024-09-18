@@ -15,7 +15,7 @@ public class BagItem : MonoBehaviour
     {
         Item = item;
         itemImage.sprite = item.itemSprite;
-        itemCount.text = item.itemCount.ToString();
+        itemCount.text = item.Quantity.ToString();
         GetComponent<Drag>().CanvasTop = PlayerBag.Instance.CanvasTop;
         GetComponent<Drag>().CanvasBot = PlayerBag.Instance.CanvasBot;
     }

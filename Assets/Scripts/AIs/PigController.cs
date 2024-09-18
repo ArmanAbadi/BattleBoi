@@ -66,7 +66,7 @@ public class PigController : AIController
         }
     }
     [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
-    public override void RPC_TakeDmg(int dmg)
+    public override void RPC_TakeDmg(int dmg, string source)
     {
         if (IsDead) return;
 
@@ -77,6 +77,10 @@ public class PigController : AIController
         {
             CurrentHealth = 0;
             Death();
+            if (source == PlayerController.Instance.NickName)
+            {
+                PlayerInventory.ClaimXP(XP);
+            }
         }
     }
     [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]

@@ -32,12 +32,12 @@ public class PlayerBag : MonoBehaviour
     public void RefreshItems()
     {
         ClearItems();
-        for (int i = 0; i < GlobalConstants.MaxBagSize; i++)
+        for (int i = 0; i < ItemManager.Instance.PlayerItems.Count; i++)
         {
-            if(PlayerInventory.InventoryItems[i] != ItemName.none)
+            if (ItemManager.Instance.PlayerItems[i].Quantity >= 1)
             {
                 GameObject bagItem = Instantiate(ItemPrefab);
-                bagItem.GetComponent<BagItem>().SetItem(PlayerInventory.Items[PlayerInventory.InventoryItems[i]]);
+                bagItem.GetComponent<BagItem>().SetItem(ItemManager.Instance.PlayerItems[i]);
                 bagItem.transform.SetParent(CanvasBot.transform, true);
                 bagItem.transform.position = GridObject.transform.GetChild(i).position;
                 bagItem.transform.localScale = Vector3.one;

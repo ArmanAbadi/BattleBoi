@@ -25,6 +25,8 @@ public class AIController : NetworkBehaviour
 
     public SpawnParameter spawnParameter;
 
+    public int XP = 1;
+
 
     [Networked]
     protected Vector3 Direction
@@ -176,7 +178,7 @@ public class AIController : NetworkBehaviour
     }
 
     [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
-    public virtual void RPC_TakeDmg(int dmg)
+    public virtual void RPC_TakeDmg(int dmg, string source)
     {
         if (IsDead) return;
 
@@ -185,6 +187,10 @@ public class AIController : NetworkBehaviour
         {
             CurrentHealth = 0;
             Death();
+            if(source == PlayerController.Instance.NickName)
+            {
+                PlayerInventory.ClaimXP(XP);
+            }
         }
     }
     public void DestroyThyself()

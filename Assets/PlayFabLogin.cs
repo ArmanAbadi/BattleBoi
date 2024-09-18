@@ -1,7 +1,12 @@
 using PlayFab;
 using PlayFab.ClientModels;
+using PlayFab.Json;
 using TMPro;
 using UnityEngine;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System;
+using static GlobalConstants;
 
 public class PlayFabLogin : MonoBehaviour
 {
@@ -13,6 +18,18 @@ public class PlayFabLogin : MonoBehaviour
     public TMP_InputField Password2;
 
     public GameObject LoadingVeil;
+
+    public static PlayFabLogin Instance;
+
+    public string PlayFabId;
+
+    public PlayerData playerData = new PlayerData();
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+    }
+
     private void Start()
     {
         DontDestroyOnLoad(this.gameObject);
@@ -64,7 +81,7 @@ public class PlayFabLogin : MonoBehaviour
         string RandomId = PlayerPrefs.GetString("CustomId");
         if (string.IsNullOrEmpty(RandomId))
         {
-            RandomId = Random.Range(0, 100000000).ToString();
+            RandomId = UnityEngine.Random.Range(0, 100000000).ToString();
 
             PlayerPrefs.SetString("CustomId", RandomId);
         }
@@ -74,6 +91,7 @@ public class PlayFabLogin : MonoBehaviour
 
     private void OnLoginSuccess(RegisterPlayFabUserResult result)
     {
+        PlayFabId = result.PlayFabId;
         SaveSignupDetails();
         LetsPlay();
     }
@@ -95,14 +113,17 @@ public class PlayFabLogin : MonoBehaviour
     }
     private void OnLoginSuccessCustomId(LoginResult result)
     {
+        PlayFabId = result.PlayFabId;
         LetsPlay();
     }
     private void OnAutoLoginSuccessUsernamePassword(LoginResult result)
     {
+        PlayFabId = result.PlayFabId;
         LetsPlay();
     }
     private void OnLoginSuccessUsernamePassword(LoginResult result)
     {
+        PlayFabId = result.PlayFabId;
         SaveLoginDetails();
         LetsPlay();
     }
@@ -117,5 +138,42 @@ public class PlayFabLogin : MonoBehaviour
     void LetsPlay()
     {
         NetworkManager.Instance.StartGameHost();
+        GetPlayerData();
     }
+    public void GetPlayerData()
+    {
+        PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+        {
+            FunctionName = "PostLoginGetData", // Arbitrary function name (must exist in your uploaded cloud.js file)
+            FunctionParameter = new { }, // The parameter provided to your function
+            GeneratePlayStreamEvent = true, // Optional - Shows this event in PlayStream
+        }, PostLoginGetDataSuccess, PostLoginGetDataFail);
+    }
+    static void PostLoginGetDataSuccess(ExecuteCloudScriptResult result)
+    {
+        JsonObject jsonResult = (JsonObject)result.FunctionResult;
+        object messageValue;
+        jsonResult.TryGetValue("messageValue", out messageValue);
+
+        PlayFabLogin.Instance.playerData = JsonConvert.DeserializeObject<PlayerData>(messageValue.ToString());
+        ItemManager.Instance.SetItemQuantities(PlayFabLogin.Instance.playerData.bag);
+    }
+    static void PostLoginGetDataFail(PlayFabError error)
+    {
+
+    }
+}
+[Serializable]
+public class PlayerData
+{
+    public int XP;
+
+    public List<serverItem> bag;
+}
+
+[Serializable]
+public class serverItem
+{
+    public string itemName;
+    public int Quantity;
 }

@@ -15,6 +15,10 @@ public class PlayerController : NetworkBehaviour
     public HealthBarController HealthBarController;
     public TextMeshProUGUI DistanceText;
 
+    public TextMeshProUGUI XPText;
+
+    [Networked] public string NickName { get; set; }
+
     [SerializeField]
     int MaxHealth = 100;
     [Networked]
@@ -75,6 +79,8 @@ public class PlayerController : NetworkBehaviour
         {
             Instance = this;
             Position = transform.position;
+
+            NickName = PlayFabLogin.Instance.PlayFabId;
         }
         transform.position = Position;
         animator = GetComponentInChildren<Animator>(); 
@@ -111,6 +117,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         sword.SetOwner(this);
+        UpdateXP();
     }
     void Freeze()
     {
@@ -245,5 +252,9 @@ public class PlayerController : NetworkBehaviour
         IsDead = true;
         animator.SetTrigger(GlobalConstants.DeadTrigger);
         GetComponent<BoxCollider2D>().isTrigger = true;
+    }
+    public void UpdateXP()
+    {
+        XPText.text = "XP: " + PlayFabLogin.Instance.playerData.XP;
     }
 }

@@ -27,7 +27,7 @@ public class Sword : MonoBehaviour
             if (Owner.HasInputAuthority)
             {
                 monsters.Add(collision.gameObject.GetComponent<AIController>());
-                collision.gameObject.GetComponent<AIController>().RPC_TakeDmg(Damage);
+                collision.gameObject.GetComponent<AIController>().RPC_TakeDmg(Damage, Owner.NickName);
             }
             Instantiate(HitVFXPrefab, collision.transform.position, Quaternion.identity);
         }

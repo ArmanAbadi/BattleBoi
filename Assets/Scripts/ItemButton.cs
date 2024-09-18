@@ -26,7 +26,7 @@ public class ItemButton : MonoBehaviour
     {
         itemType = item.itemType;
         Image.sprite  = item.itemSprite;
-        Count = item.itemCount;
+        Count = item.Quantity;
 
         button.onClick.AddListener(item.ActivateItem);
     }
