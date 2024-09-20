@@ -217,13 +217,14 @@ public class PlayerController : NetworkBehaviour
             if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
                 Direction += Vector2.right;
 
+            Slash = Input.GetKey(KeyCode.Space);
             if (MobileInputController.Instance != null)
             {
                 if (MobileInputController.Instance.Direction().magnitude != 0)
                 {
                     Direction = MobileInputController.Instance.Direction();
                 }
-                Slash = Input.GetKey(KeyCode.Space) || MobileInputController.Instance.SlashPressed;
+                Slash = Slash || MobileInputController.Instance.SlashPressed;
             }
         }
         

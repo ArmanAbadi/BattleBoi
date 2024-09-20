@@ -4,17 +4,13 @@ using UnityEngine;
 
 public class DisablePlatformSpecific : MonoBehaviour
 {
-    public bool DisableIfMobile;
-    public bool DisableIfNotMobile;
+    public bool EnableIfMobile;
+    public bool EnableIfDesktop;
+
+    public GameObject Target;
     private void Start()
     {
-        if (Application.isMobilePlatform)
-        {
-            if (DisableIfMobile) gameObject.SetActive(false);
-        }
-        else
-        {
-            if (DisableIfNotMobile) gameObject.SetActive(false);
-        }
+        Target.SetActive(Application.isMobilePlatform && EnableIfMobile);
+        Target.SetActive(!Application.isMobilePlatform && EnableIfDesktop);
     }
 }
