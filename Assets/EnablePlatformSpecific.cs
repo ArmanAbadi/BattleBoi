@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnableIfPlatformSpecific : MonoBehaviour
+public class EnablePlatformSpecific : MonoBehaviour
 {
     public bool EnableIfMobile;
     public bool EnableIfDesktop;
