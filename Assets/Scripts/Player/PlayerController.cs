@@ -34,6 +34,7 @@ public class PlayerController : NetworkBehaviour
             if (HasInputAuthority)
             {
                 HealthBarController.UpdateHealthBar((float)currentHealth / MaxHealth);
+                if (currentHealth <= 0) IsDead = true;
             }
         }
     }
@@ -70,7 +71,7 @@ public class PlayerController : NetworkBehaviour
         set;
     }
     [Networked]
-    bool IsDead { get; set; }
+    bool IsDead { get; set; } = false;
 
     protected ChangeDetector _changeDetector;
     public override void Spawned()
