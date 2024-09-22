@@ -42,6 +42,25 @@ public class PigController : AIController
             }
         }
     }
+    protected override void BasicFollow()
+    {
+        PlayerController target = SpawnManager.Instance.players[0];
+        foreach (PlayerController player in SpawnManager.Instance.players)
+        {
+            if ((player.transform.position - transform.position).magnitude < (target.transform.position - transform.position).magnitude)
+            {
+                target = player;
+            }
+        }
+        if ((target.transform.position - transform.position).magnitude < AggroRange)
+        {
+            Direction = (target.transform.position - transform.position).normalized;
+        }
+        else
+        {
+            RandomWalk();
+        }
+    }
     protected override void UpdateMovement()
     {
         rigidbody2D.velocity = Random.Range(0f, Aggrod? AggroSpeed:Speed) * Direction.normalized;
