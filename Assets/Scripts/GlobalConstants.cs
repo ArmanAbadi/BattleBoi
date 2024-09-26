@@ -20,6 +20,10 @@ public static class GlobalConstants
     public const string HumanAttackDown = "HumanAttackDownNoWeapon";
     public const string HumanAttackLeft = "HumanAttackLeftNoWeapon";
     public const string HumanAttackRight = "HumanAttackRightNoWeapon";
+    public const string AttackUp = "AttackUp";
+    public const string AttackDown = "AttackDown";
+    public const string AttackRight = "AttackRight";
+    public const string AttackLeft = "AttackLeft";
 
     public enum Tags
     {

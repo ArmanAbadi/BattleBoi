@@ -161,13 +161,13 @@ public class PlayerController : NetworkBehaviour
     {
         if (Mathf.Abs(animator.GetFloat(GlobalConstants.VerticalVelocity)) < Mathf.Abs(animator.GetFloat(GlobalConstants.HorizontalVelocity)))
         {
-            if (Mathf.Sign(animator.GetFloat(GlobalConstants.HorizontalVelocity)) == 1) animator.Play(GlobalConstants.HumanAttackRight);
-            else animator.Play(GlobalConstants.HumanAttackLeft);
+            if (Mathf.Sign(animator.GetFloat(GlobalConstants.HorizontalVelocity)) == 1) animator.Play(GlobalConstants.AttackRight);
+            else animator.Play(GlobalConstants.AttackLeft);
         }
         else
         {
-            if (Mathf.Sign(animator.GetFloat(GlobalConstants.VerticalVelocity)) == 1) animator.Play(GlobalConstants.HumanAttackUp);
-            else animator.Play(GlobalConstants.HumanAttackDown);
+            if (Mathf.Sign(animator.GetFloat(GlobalConstants.VerticalVelocity)) == 1) animator.Play(GlobalConstants.AttackUp);
+            else animator.Play(GlobalConstants.AttackDown);
         }
         sword.Attack();
     }
