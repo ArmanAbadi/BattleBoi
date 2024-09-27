@@ -149,7 +149,11 @@ public class AIController : NetworkBehaviour
     }
     protected void RandomWalk()
     {
-        Direction = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0);
+        if (Time.time > MovementUpdateTimeMarker + MovementUpdateTime)
+        {
+            MovementUpdateTimeMarker = Time.time;
+            Direction = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0);
+        }
     }
     protected virtual void Attack()
     {

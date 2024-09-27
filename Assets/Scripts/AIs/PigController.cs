@@ -18,6 +18,8 @@ public class PigController : AIController
     }
     public float AggroSpeed = 5f;
     public int Damage = 10;
+
+    public GameObject AggroVFX;
     protected void Start()
     {
         MonsterManager.AddPig(this);
@@ -35,11 +37,7 @@ public class PigController : AIController
         }
         else
         {
-            if (Time.time - MovementUpdateTimeMarker > MovementUpdateTime)
-            {
-                MovementUpdateTimeMarker = Time.time;
-                RandomWalk();
-            }
+            RandomWalk();
         }
     }
     protected override void BasicFollow()
@@ -105,7 +103,10 @@ public class PigController : AIController
     [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
     void RPC_AggroAllies()
     {
-        foreach(PigController pig in MonsterManager.Pigs)
+        GameObject temp = Instantiate(AggroVFX, transform.position, Quaternion.identity);
+        temp.transform.localScale = AggroAlliesRange * Vector3.one;
+        temp.transform.parent = transform;
+        foreach (PigController pig in MonsterManager.Pigs)
         {
             if ((transform.position - pig.transform.position).magnitude < AggroAlliesRange)
             {
