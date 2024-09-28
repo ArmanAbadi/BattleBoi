@@ -7882,7 +7882,7 @@ Tilemap:
       - {fileID: 795491169, guid: ae7a0c3129a86c247a166a7bc563d82d, type: 3}
       - {fileID: -1324979038, guid: ae7a0c3129a86c247a166a7bc563d82d, type: 3}
       - {fileID: -313964324, guid: ae7a0c3129a86c247a166a7bc563d82d, type: 3}
-      m_AnimationSpeed: 5
+      m_AnimationSpeed: 5.0000005
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   m_TileAssetArray:
