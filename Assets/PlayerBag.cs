@@ -10,6 +10,7 @@ public class PlayerBag : MonoBehaviour
     public Canvas CanvasTop;
     public Canvas CanvasBot;
     public static PlayerBag Instance { get; private set; }
+    public GameObject Container;
 
     List<GameObject> items = new List<GameObject>();
     private void Awake()
@@ -25,8 +26,10 @@ public class PlayerBag : MonoBehaviour
             Instance = this;
         }
     }
-    private void OnEnable()
+    IEnumerator FrameDelay()
     {
+        yield return null;
+
         RefreshItems();
     }
     public void RefreshItems()
@@ -45,6 +48,11 @@ public class PlayerBag : MonoBehaviour
                 items.Add(bagItem);
             }
         }
+    }
+    public void OpenBag()
+    {
+        Container.SetActive(true);
+        StartCoroutine(FrameDelay());
     }
     void ClearItems()
     {

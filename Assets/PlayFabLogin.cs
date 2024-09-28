@@ -79,13 +79,14 @@ public class PlayFabLogin : MonoBehaviour
     public void PlayAsGuest()
     {
         string RandomId = PlayerPrefs.GetString("CustomId");
-        if (string.IsNullOrEmpty(RandomId))
+        bool CreateAccount = string.IsNullOrEmpty(RandomId);
+        if (CreateAccount)
         {
             RandomId = UnityEngine.Random.Range(0, 100000000).ToString();
 
             PlayerPrefs.SetString("CustomId", RandomId);
         }
-        var request = new LoginWithCustomIDRequest { CustomId = RandomId, CreateAccount = true };
+        var request = new LoginWithCustomIDRequest { CustomId = RandomId, CreateAccount = CreateAccount };
         PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccessCustomId, OnLoginFailure);
     }
 
@@ -97,7 +98,6 @@ public class PlayFabLogin : MonoBehaviour
     }
     void SaveSignupDetails()
     {
-
         PlayerPrefs.SetInt("LoginFullUser", 1);
 
         PlayerPrefs.SetString("Email", Email.text);

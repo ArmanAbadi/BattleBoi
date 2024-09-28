@@ -104,7 +104,7 @@ public class PigController : AIController
     void RPC_AggroAllies()
     {
         GameObject temp = Instantiate(AggroVFX, transform.position, Quaternion.identity);
-        temp.transform.localScale = AggroAlliesRange * Vector3.one;
+        temp.transform.localScale = AggroAlliesRange * Vector3.one * 2;
         temp.transform.parent = transform;
         foreach (PigController pig in MonsterManager.Pigs)
         {
