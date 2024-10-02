@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using static GlobalConstants;
 
 public class PlayerBag : MonoBehaviour
@@ -13,6 +14,9 @@ public class PlayerBag : MonoBehaviour
     public GameObject Container;
 
     List<GameObject> items = new List<GameObject>();
+
+    public UnityAction PorkChopOwned;
+
     private void Awake()
     {
         // If there is an instance, and it's not me, delete myself.
@@ -46,6 +50,8 @@ public class PlayerBag : MonoBehaviour
                 bagItem.transform.localScale = Vector3.one;
 
                 items.Add(bagItem);
+
+                if (ItemManager.Instance.PlayerItems[i].itemName == ItemName.PigMeat) PorkChopOwned.Invoke();
             }
         }
     }
