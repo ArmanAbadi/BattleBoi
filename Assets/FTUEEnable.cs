@@ -16,14 +16,14 @@ public class FTUEEnable : MonoBehaviour
         }
         if (ftueKey == FTUEKey.FirstPorkChop && PlayerPrefs.GetInt(FTUEKey.FirstPorkChop.ToString()) == 0)
         {
-            PlayerBag.Instance.PorkChopOwned += FirstPorkChop;
+            PlayerBag.Instance.PorkChopOwned.AddListener(FirstPorkChop);
             PlayerPrefs.GetInt(FTUEKey.FirstPorkChop.ToString(), 1);
         }
     }
     void FirstPorkChop()
     {
         target.SetActive(true);
-        PlayerBag.Instance.PorkChopOwned -= FirstPorkChop;
+        PlayerBag.Instance.PorkChopOwned.RemoveListener(FirstPorkChop);
     }
 }
 public enum FTUEKey

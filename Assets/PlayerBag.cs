@@ -15,7 +15,7 @@ public class PlayerBag : MonoBehaviour
 
     List<GameObject> items = new List<GameObject>();
 
-    public UnityAction PorkChopOwned;
+    public UnityEvent PorkChopOwned;
 
     private void Awake()
     {
@@ -50,7 +50,7 @@ public class PlayerBag : MonoBehaviour
                 bagItem.transform.localScale = Vector3.one;
 
                 items.Add(bagItem);
-
+                
                 if (ItemManager.Instance.PlayerItems[i].itemName == ItemName.PigMeat) PorkChopOwned.Invoke();
             }
         }
