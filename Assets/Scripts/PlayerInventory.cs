@@ -63,6 +63,7 @@ public static class PlayerInventory
     }
     public static void AddItem(Item Item)
     {
+        Debug.Log(Item.itemName + " " + Item.Quantity);
         bool found = false;
         foreach(Item item in ItemManager.Instance.PlayerItems)
         {
@@ -70,6 +71,8 @@ public static class PlayerInventory
             {
                 found = true;
                 item.Quantity += Item.Quantity;
+
+                Debug.Log(item.Quantity + " " + Item.Quantity);
             }
         }
         ItemBarController.Instance.RefreshItems();
