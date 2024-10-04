@@ -88,6 +88,7 @@ public class PlayFabLogin : MonoBehaviour
         }
         var request = new LoginWithCustomIDRequest { CustomId = RandomId, CreateAccount = CreateAccount };
         PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccessCustomId, OnLoginFailure);
+        LoadingVeil.SetActive(true);
     }
 
     private void OnLoginSuccess(RegisterPlayFabUserResult result)
