@@ -14,6 +14,8 @@ public class DirtoController : AIController
 
     public float BulletSpeed;
     public Transform ProjectileSpawnLocation;
+
+    public ParticleSystem ps;
     protected override void UpdateDirection()
     {
         Direction = Vector3.zero;
@@ -113,5 +115,13 @@ public class DirtoController : AIController
     public void RPC_ShootProjectile(int dmg, Vector2 direction, float speed)
     {
         projectile.Shoot(dmg, direction, speed);
+    }
+    public void StopParticles()
+    {
+        ps.Stop();
+    }
+    public void PlayParticles()
+    {
+        ps.Play();
     }
 }
