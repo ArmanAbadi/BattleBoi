@@ -17,6 +17,14 @@ public class PlayerBag : MonoBehaviour
 
     public UnityEvent PorkChopOwned;
 
+    public GameObject Equipment_HP_GEM;
+    public GameObject Equipment_ARMOR_GEM;
+    public GameObject Equipment_WEAPON;
+
+    public GameObject Crafting_Slot_1;
+    public GameObject Crafting_Slot_2;
+    public GameObject Crafted_Slot;
+
     private void Awake()
     {
         // If there is an instance, and it's not me, delete myself.
